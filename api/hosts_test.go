@@ -4,18 +4,15 @@
 package api
 
 import (
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetHosts(t *testing.T) {
-	//c := NewClient(os.Getenv("HostST_INTEGRATION_API_KEY"))
-	c := NewClient("DUMMY_API_KEY")
+	c := NewClient("my-key")
 
-	ctx := context.Background()
-	res, err := c.GetHosts(ctx, nil)
+	res, err := c.GetHosts(nil)
 
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
