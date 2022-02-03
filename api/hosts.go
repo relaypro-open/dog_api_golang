@@ -2,18 +2,20 @@ package api
 
 import "strconv"
 
-type HostsList struct {
-	//Count      int    `json:"count"`
-	//PagesCount int    `json:"pages_count"`
-	Hosts []Host `json:"hosts"`
-}
+//type HostsList struct {
+//	//Count      int    `json:"count"`
+//	//PagesCount int    `json:"pages_count"`
+//	Hosts []Host `json:"hosts"`
+//}
+
+type HostsList []Host
 
 type HostsListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
 }
 
-func (c *Client) GetHosts(options *HostsListOptions) (HostsList, error) {
+func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsList, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -30,5 +32,5 @@ func (c *Client) GetHosts(options *HostsListOptions) (HostsList, error) {
 		Get("/hosts")
 
 	result := (*resp.Result().(*HostsList))
-	return result, err
+	return result, resp.StatusCode(), err
 }
