@@ -1,3 +1,5 @@
+//go:build integration || host
+
 package api
 
 import (

@@ -1,3 +1,5 @@
+//go:build integration || profile
+
 package api
 
 import (
@@ -8,13 +10,14 @@ import (
 )
 
 func TestProfileIntegration(t *testing.T) {
-	ProfileCreateResponse := DoTestCreateProfile(t) //C
-	t.Logf("Id: %v", ProfileCreateResponse.ID)
-	DoTestGetProfile(t, ProfileCreateResponse.ID)    //R
-	DoTestUpdateProfile(t, ProfileCreateResponse.ID) //U
-	updatedProfile := DoTestGetProfile(t, ProfileCreateResponse.ID)
-	assert.Equal(t, "name", updatedProfile.Name)
-	DoTestDeleteProfile(t, ProfileCreateResponse.ID) //D
+	profileCreateResponse := DoTestCreateProfile(t) //C
+	t.Logf("Id: %v", profileCreateResponse.ID)
+	DoTestGetProfile(t, profileCreateResponse.ID)                      //R
+	profileUpdated := DoTestUpdateProfile(t, profileCreateResponse.ID) //U
+	updatedProfile := DoTestGetProfile(t, profileUpdated.ID)           //Updating Profiles create new Profiles
+	assert.Equal(t, "name_update", updatedProfile.Name)
+	DoTestDeleteProfile(t, profileCreateResponse.ID) //D
+	DoTestDeleteProfile(t, updatedProfile.ID)        //D
 }
 
 func DoTestGetProfile(t *testing.T, ProfileID string) (Profile Profile) {
