@@ -8,7 +8,7 @@ type Host struct {
 	Active      string `json:"active"`
 	Environment string `json:"environment"`
 	Group       string `json:"group"`
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
@@ -38,7 +38,12 @@ type HostCreateRequest struct {
 	Name        string `json:"name"`
 }
 
-func (c *Client) GetHost(HostId string, options *HostListOptions) (Host, int, error) {
+type HostCreateResponse struct {
+	ID     string `json:"id"`
+	Result string `json:"result"`
+}
+
+func (c *Client) GetHost(hostID string, options *HostListOptions) (host Host, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -53,41 +58,41 @@ func (c *Client) GetHost(HostId string, options *HostListOptions) (Host, int, er
 			"limit":   strconv.Itoa(limit),
 		}).
 		SetPathParams(map[string]string{
-			"HostId": HostId,
+			"hostID": hostID,
 		}).
-		Get("/host/{HostId}")
+		Get("/host/{hostID}")
 
 	result := (*resp.Result().(*Host))
 	return result, resp.StatusCode(), err
 
 }
 
-func (c *Client) UpdateHost(HostId string, hostUpdate HostUpdateRequest, options *HostListOptions) (Host, int, error) {
+func (c *Client) UpdateHost(hostID string, hostUpdate HostUpdateRequest, options *HostListOptions) (host Host, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
 		SetResult(&Host{}).
 		SetPathParams(map[string]string{
-			"HostId": HostId,
+			"hostID": hostID,
 		}).
 		SetBody(hostUpdate).
-		Put("/host/{HostId}")
+		Put("/host/{hostID}")
 
 	result := (*resp.Result().(*Host))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateHost(hostNew HostCreateRequest, options *HostListOptions) (Host, int, error) {
+func (c *Client) CreateHost(hostNew HostCreateRequest, options *HostListOptions) (hostCreateResponse HostCreateResponse, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&Host{}).
+		SetResult(&HostCreateResponse{}).
 		SetBody(hostNew).
 		Post("/host")
 
-	result := (*resp.Result().(*Host))
+	result := (*resp.Result().(*HostCreateResponse))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) DeleteHost(HostId string, options *HostListOptions) (Host, int, error) {
+func (c *Client) DeleteHost(hostID string, options *HostListOptions) (host Host, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -102,9 +107,9 @@ func (c *Client) DeleteHost(HostId string, options *HostListOptions) (Host, int,
 			"limit":   strconv.Itoa(limit),
 		}).
 		SetPathParams(map[string]string{
-			"HostId": HostId,
+			"hostID": hostID,
 		}).
-		Delete("/host/{HostId}")
+		Delete("/host/{hostID}")
 
 	result := (*resp.Result().(*Host))
 	return result, resp.StatusCode(), err

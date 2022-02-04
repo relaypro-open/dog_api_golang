@@ -2,14 +2,14 @@ package api
 
 import "strconv"
 
-type HostsList []Host
+type ProfilesList []Profile
 
-type HostsListOptions struct {
+type ProfilesListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
 }
 
-func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsList, statusCode int, Error error) {
+func (c *Client) GetProfiles(options *ProfilesListOptions) (profilesList ProfilesList, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -18,13 +18,13 @@ func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsList, statu
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&HostsList{}).
+		SetResult(&ProfilesList{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
-		Get("/hosts")
+		Get("/profiles")
 
-	result := (*resp.Result().(*HostsList))
+	result := (*resp.Result().(*ProfilesList))
 	return result, resp.StatusCode(), err
 }

@@ -1,45 +1,56 @@
 package api
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetHost(t *testing.T) {
-	c := NewClient("my-key")
+func TestHostIntegration(t *testing.T) {
+	hostCreateResponse := DoTestCreateHost(t) //C
+	t.Logf("Id: %v", hostCreateResponse.ID)
+	DoTestGetHost(t, hostCreateResponse.ID)    //R
+	DoTestUpdateHost(t, hostCreateResponse.ID) //U
+	updatedHost := DoTestGetHost(t, hostCreateResponse.ID)
+	assert.Equal(t, "name", updatedHost.Name)
+	DoTestDeleteHost(t, hostCreateResponse.ID) //D
+}
 
-	HostId := "eda000f6-0743-448f-874b-a7703ecddfaa"
-	res, statusCode, err := c.GetHost(HostId, nil)
+func DoTestGetHost(t *testing.T, hostID string) (host Host) {
+	c := NewClient(os.Getenv("DOG_API_KEY"))
+
+	res, statusCode, err := c.GetHost(hostID, nil)
 
 	assert.Equal(t, 200, statusCode)
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res: %v", res)
+	t.Logf("res: %+v\n", res)
 
 	assert.NotEmpty(t, res.HostKey, "expecting non-empty hostkey")
-	assert.Equal(t, res.Id, HostId)
+	assert.Equal(t, res.ID, hostID)
+	return res
 }
 
-func TestUpdateHost(t *testing.T) {
-	c := NewClient("my-key")
+func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
+	c := NewClient(os.Getenv("DOG_API_KEY"))
 
-	HostId := "eda000f6-0743-448f-874b-a7703ecddfaa"
 	update := HostUpdateRequest{Group: "group", HostKey: "hostkey", Name: "name"}
-	res, statusCode, err := c.UpdateHost(HostId, update, nil)
+	res, statusCode, err := c.UpdateHost(hostID, update, nil)
 
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res: %v", res)
+	t.Logf("res: %+v\n", res)
 
 	assert.NotEmpty(t, res.HostKey, "expecting non-empty hostkey")
-	UpdatedHost, statusCode, err := c.GetHost(HostId, nil)
+	UpdatedHost, statusCode, err := c.GetHost(hostID, nil)
 	assert.Equal(t, 200, statusCode)
 	assert.Equal(t, UpdatedHost.HostKey, "hostkey")
+	return res
 }
 
-func TestCreateDeleteHost(t *testing.T) {
-	c := NewClient("my-key")
+func DoTestCreateHost(t *testing.T) (hostCreateResponse HostCreateResponse) {
+	c := NewClient(os.Getenv("DOG_API_KEY"))
 
 	newHost := HostCreateRequest{
 		Active:      "active",
@@ -55,11 +66,17 @@ func TestCreateDeleteHost(t *testing.T) {
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
 	t.Logf("err: %v", err)
-	t.Logf("res: %v", res)
-	//Test DeleteHost
-	HostId := res.Id
-	DeleteRes, DeleteStatusCode, DeleteErr := c.DeleteHost(HostId, nil)
-	assert.Equal(t, 204, DeleteStatusCode)
-	assert.Nil(t, DeleteErr, "expecting nil error")
-	assert.NotNil(t, DeleteRes, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+	return res
+}
+func DoTestDeleteHost(t *testing.T, hostID string) {
+	c := NewClient(os.Getenv("DOG_API_KEY"))
+
+	res, statusCode, err := c.DeleteHost(hostID, nil)
+	assert.Equal(t, 204, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+
+	assert.Empty(t, res, "expecting empty response")
 }
