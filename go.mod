@@ -1,4 +1,4 @@
-module dog_api_go
+module github.com/relaypro-open/dog_api_golang
 
 go 1.17
 

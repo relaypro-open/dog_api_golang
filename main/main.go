@@ -1,8 +1,9 @@
 package main
 
 import (
-	"dog_api_go/api"
 	"fmt"
+
+	"github.com/relaypro-open/dog_api_golang/api"
 )
 
 func main() {
