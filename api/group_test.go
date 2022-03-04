@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetGroups(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetGroups(nil)
 	assert.Equal(t, 200, statusCode)
@@ -32,7 +32,7 @@ func TestGroupIntegration(t *testing.T) {
 }
 
 func DoTestGetGroup(t *testing.T, GroupID string) (Group Group) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetGroup(GroupID, nil)
 
@@ -47,7 +47,7 @@ func DoTestGetGroup(t *testing.T, GroupID string) (Group Group) {
 }
 
 func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	update := GroupUpdateRequest{
 		Description:    "description_update",
@@ -68,7 +68,7 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 }
 
 func DoTestCreateGroup(t *testing.T) (groupCreateReponse GroupCreateResponse) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	newGroup := GroupCreateRequest{
 		Description:    "description",
@@ -86,7 +86,7 @@ func DoTestCreateGroup(t *testing.T) (groupCreateReponse GroupCreateResponse) {
 }
 
 func DoTestDeleteGroup(t *testing.T, GroupID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteGroup(GroupID, nil)
 	assert.Equal(t, 204, statusCode)

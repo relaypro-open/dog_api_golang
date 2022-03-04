@@ -9,8 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestFail(t *testing.T) {
+	DoTestCreateHostFail(t) //C
+}
+
 func TestGetHosts(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetHosts(nil)
 	assert.Equal(t, 200, statusCode)
@@ -32,7 +36,7 @@ func TestHostIntegration(t *testing.T) {
 }
 
 func DoTestGetHost(t *testing.T, hostID string) (host Host) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetHost(hostID, nil)
 
@@ -47,7 +51,7 @@ func DoTestGetHost(t *testing.T, hostID string) (host Host) {
 }
 
 func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	update := HostUpdateRequest{Group: "group", HostKey: "hostkey", Name: "name"}
 	res, statusCode, err := c.UpdateHost(hostID, update, nil)
@@ -64,7 +68,27 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 }
 
 func DoTestCreateHost(t *testing.T) (hostCreateResponse HostCreateResponse) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+
+	newHost := HostCreateRequest{
+		Active:      "active",
+		Environment: "*",
+		Group:       "new_group",
+		HostKey:     "new_hostkey",
+		Location:    "*",
+		Name:        "new_name",
+	}
+
+	res, statusCode, err := c.CreateHost(newHost, nil)
+	assert.Equal(t, 201, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("err: %v", err)
+	t.Logf("res: %+v\n", res)
+	return res
+}
+func DoTestCreateHostFail(t *testing.T) (hostCreateResponse HostCreateResponse) {
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	newHost := HostCreateRequest{
 		Active:      "active",
@@ -84,7 +108,7 @@ func DoTestCreateHost(t *testing.T) (hostCreateResponse HostCreateResponse) {
 	return res
 }
 func DoTestDeleteHost(t *testing.T, hostID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"))
+	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteHost(hostID, nil)
 	assert.Equal(t, 204, statusCode)
