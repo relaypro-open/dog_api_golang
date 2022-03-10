@@ -24,6 +24,7 @@ type HostUpdateRequest struct {
 	Active      string `json:"active,omitempty"`
 	Environment string `json:"environment,omitempty"`
 	Group       string `json:"group,omitempty"`
+	ID          string `json:"id,omitempty"`
 	HostKey     string `json:"hostkey,omitempty"`
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
@@ -39,8 +40,13 @@ type HostCreateRequest struct {
 }
 
 type HostCreateResponse struct {
-	ID     string `json:"id"`
-	Result string `json:"result"`
+	Active      string `json:"active"`
+	Environment string `json:"environment"`
+	Group       string `json:"group"`
+	ID          string `json:"id"`
+	HostKey     string `json:"hostkey"`
+	Location    string `json:"location"`
+	Name        string `json:"name"`
 }
 
 type HostsList []Host
@@ -108,14 +114,14 @@ func (c *Client) UpdateHost(hostID string, hostUpdate HostUpdateRequest, options
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateHost(hostNew HostCreateRequest, options *HostListOptions) (hostCreateResponse HostCreateResponse, statusCode int, Error error) {
+func (c *Client) CreateHost(hostNew HostCreateRequest, options *HostListOptions) (host Host, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&HostCreateResponse{}).
+		SetResult(&Host{}).
 		SetBody(hostNew).
 		Post("/host")
 
-	result := (*resp.Result().(*HostCreateResponse))
+	result := (*resp.Result().(*Host))
 	return result, resp.StatusCode(), err
 }
 
