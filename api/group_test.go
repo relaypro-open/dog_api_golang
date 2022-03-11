@@ -9,21 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetGroups(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
-
-	res, statusCode, err := c.GetGroups(nil)
-	assert.Equal(t, 200, statusCode)
-	assert.Nil(t, err, "expecting nil error")
-	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res[0].ID %s\n", res[0].ID)
-
-	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
-}
-
 func TestGroupIntegration(t *testing.T) {
 	GroupCreateResponse := DoTestCreateGroup(t) //C
 	t.Logf("Id: %v", GroupCreateResponse.ID)
+	DoTestGetGroups(t)                           //R
 	DoTestGetGroup(t, GroupCreateResponse.ID)    //R
 	DoTestUpdateGroup(t, GroupCreateResponse.ID) //U
 	updatedGroup := DoTestGetGroup(t, GroupCreateResponse.ID)
@@ -31,8 +20,20 @@ func TestGroupIntegration(t *testing.T) {
 	DoTestDeleteGroup(t, GroupCreateResponse.ID) //D
 }
 
+func DoTestGetGroups(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+
+	res, statusCode, err := c.GetGroups(nil)
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	//t.Logf("res: %+v\n", res)
+
+	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
+}
+
 func DoTestGetGroup(t *testing.T, GroupID string) (Group Group) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetGroup(GroupID, nil)
 
@@ -47,7 +48,7 @@ func DoTestGetGroup(t *testing.T, GroupID string) (Group Group) {
 }
 
 func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := GroupUpdateRequest{
 		Description:    "description_update",
@@ -67,8 +68,8 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 	return res
 }
 
-func DoTestCreateGroup(t *testing.T) (groupCreateReponse GroupCreateResponse) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func DoTestCreateGroup(t *testing.T) (group Group) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newGroup := GroupCreateRequest{
 		Description:    "description",
@@ -86,7 +87,7 @@ func DoTestCreateGroup(t *testing.T) (groupCreateReponse GroupCreateResponse) {
 }
 
 func DoTestDeleteGroup(t *testing.T, GroupID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteGroup(GroupID, nil)
 	assert.Equal(t, 204, statusCode)

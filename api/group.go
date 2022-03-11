@@ -5,8 +5,8 @@ import (
 )
 
 type Group struct {
-	ID             string `json:"id"`
-	Created        int    `json:"created"`
+	ID string `json:"id"`
+	//Created        int    `json:"created,omitempty"` //TODO: created has both int and string entries
 	Description    string `json:"description"`
 	Name           string `json:"name"`
 	ProfileName    string `json:"profile_name"`
@@ -21,7 +21,7 @@ type GroupListOptions struct {
 // GroupUpdateRequest is a struct for the request object required to update a Group
 type GroupUpdateRequest struct {
 	Description    string `json:"description,omitempty"`
-	Name           string `json:"name"`
+	Name           string `json:"name,omitempty"`
 	ProfileName    string `json:"profile_name,omitempty"`
 	ProfileVersion string `json:"profile_version,omitempty"`
 }
@@ -103,14 +103,14 @@ func (c *Client) UpdateGroup(GroupID string, GroupUpdate GroupUpdateRequest, opt
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateGroup(groupNew GroupCreateRequest, options *GroupListOptions) (groupCreateResponse GroupCreateResponse, statusCode int, Error error) {
+func (c *Client) CreateGroup(groupNew GroupCreateRequest, options *GroupListOptions) (group Group, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&GroupCreateResponse{}).
+		SetResult(&Group{}).
 		SetBody(groupNew).
 		Post("/group")
 
-	result := (*resp.Result().(*GroupCreateResponse))
+	result := (*resp.Result().(*Group))
 	return result, resp.StatusCode(), err
 }
 

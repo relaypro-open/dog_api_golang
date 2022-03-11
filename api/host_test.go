@@ -16,6 +16,7 @@ import (
 func TestHostIntegration(t *testing.T) {
 	hostCreateResponse := DoTestCreateHost(t) //C
 	t.Logf("Id: %v", hostCreateResponse.ID)
+	DoTestGetHosts(t)                          //R
 	DoTestGetHost(t, hostCreateResponse.ID)    //R
 	DoTestUpdateHost(t, hostCreateResponse.ID) //U
 	updatedHost := DoTestGetHost(t, hostCreateResponse.ID)
