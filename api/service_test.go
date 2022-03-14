@@ -9,8 +9,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetServices(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func TestServiceIntegration(t *testing.T) {
+	ServiceCreateResponse := DoTestCreateService(t) //C
+	t.Logf("Id: %v", ServiceCreateResponse.ID)
+	DoTestGetServices(t)                             // R
+	DoTestGetService(t, ServiceCreateResponse.ID)    //R
+	DoTestUpdateService(t, ServiceCreateResponse.ID) //U
+	updatedService := DoTestGetService(t, ServiceCreateResponse.ID)
+	assert.Equal(t, "name_update", updatedService.Name)
+	DoTestDeleteService(t, ServiceCreateResponse.ID) //D
+}
+
+func DoTestGetServices(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetServices(nil)
 	assert.Equal(t, 200, statusCode)
@@ -21,18 +32,8 @@ func TestGetServices(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-func TestServiceIntegration(t *testing.T) {
-	ServiceCreateResponse := DoTestCreateService(t) //C
-	t.Logf("Id: %v", ServiceCreateResponse.ID)
-	DoTestGetService(t, ServiceCreateResponse.ID)    //R
-	DoTestUpdateService(t, ServiceCreateResponse.ID) //U
-	updatedService := DoTestGetService(t, ServiceCreateResponse.ID)
-	assert.Equal(t, "name_update", updatedService.Name)
-	DoTestDeleteService(t, ServiceCreateResponse.ID) //D
-}
-
 func DoTestGetService(t *testing.T, ServiceID string) (Service Service) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetService(ServiceID, nil)
 
@@ -47,7 +48,7 @@ func DoTestGetService(t *testing.T, ServiceID string) (Service Service) {
 }
 
 func DoTestUpdateService(t *testing.T, ServiceID string) (Service Service) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ServiceUpdateRequest{
 		Services: []Services{
@@ -71,8 +72,8 @@ func DoTestUpdateService(t *testing.T, ServiceID string) (Service Service) {
 	return res
 }
 
-func DoTestCreateService(t *testing.T) (serviceCreateReponse ServiceCreateResponse) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func DoTestCreateService(t *testing.T) (service Service) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newService := ServiceCreateRequest{
 		Services: []Services{
@@ -94,7 +95,7 @@ func DoTestCreateService(t *testing.T) (serviceCreateReponse ServiceCreateRespon
 }
 
 func DoTestDeleteService(t *testing.T, ServiceID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteService(ServiceID, nil)
 	assert.Equal(t, 204, statusCode)

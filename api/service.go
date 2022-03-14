@@ -95,23 +95,23 @@ func (c *Client) UpdateService(ServiceID string, ServiceUpdate ServiceUpdateRequ
 	resp, err := c.Client.R().
 		SetResult(&Service{}).
 		SetPathParams(map[string]string{
-			"ServiceID": ServiceID,
+			"serviceID": ServiceID,
 		}).
 		SetBody(ServiceUpdate).
-		Put("/service/{ServiceID}")
+		Put("/service/{serviceID}")
 
 	result := (*resp.Result().(*Service))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateService(serviceNew ServiceCreateRequest, options *ServiceListOptions) (serviceCreateResponse ServiceCreateResponse, statusCode int, Error error) {
+func (c *Client) CreateService(serviceNew ServiceCreateRequest, options *ServiceListOptions) (service Service, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&ServiceCreateResponse{}).
+		SetResult(&Service{}).
 		SetBody(serviceNew).
 		Post("/service")
 
-	result := (*resp.Result().(*ServiceCreateResponse))
+	result := (*resp.Result().(*Service))
 	return result, resp.StatusCode(), err
 }
 
