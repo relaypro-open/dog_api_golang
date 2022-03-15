@@ -25,15 +25,15 @@ type ServiceListOptions struct {
 }
 
 type ServiceUpdateRequest struct {
-	PortProtocolList []PortProtocol `json:"services"`
-	Name             string         `json:"name"`
-	Version          int            `json:"version"`
+	PortProtocolList PortProtocolList `json:"services"`
+	Name             string           `json:"name"`
+	Version          int              `json:"version"`
 }
 
 type ServiceCreateRequest struct {
-	PortProtocolList []PortProtocol `json:"services"`
-	Name             string         `json:"name"`
-	Version          int            `json:"version"`
+	PortProtocolList PortProtocolList `json:"services"`
+	Name             string           `json:"name"`
+	Version          int              `json:"version"`
 }
 
 type ServiceCreateResponse struct {
