@@ -51,7 +51,7 @@ func DoTestUpdateService(t *testing.T, ServiceID string) (Service Service) {
 	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ServiceUpdateRequest{
-		PortProtocolList: PortProtocolList{
+		Services: []PortProtocol{
 			PortProtocol{
 				Ports:    []string{"1:65535"},
 				Protocol: "tcp",
@@ -76,7 +76,7 @@ func DoTestCreateService(t *testing.T) (service Service) {
 	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newService := ServiceCreateRequest{
-		PortProtocolList: PortProtocolList{
+		Services: []PortProtocol{
 			PortProtocol{
 				Ports:    []string{"2:65534"},
 				Protocol: "udp",
