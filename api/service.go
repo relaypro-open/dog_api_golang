@@ -5,11 +5,11 @@ import (
 )
 
 type Service struct {
-	Created  int            `json:"created"`
-	ID       string         `json:"id"`
-	Services []PortProtocol `json:"services"`
-	Name     string         `json:"name"`
-	Version  int            `json:"version"`
+	//Created  int        `json:"created"`
+	ID       string     `json:"id"`
+	Services []Services `json:"services"`
+	Name     string     `json:"name"`
+	Version  int        `json:"version"`
 }
 
 type Services []PortProtocol
