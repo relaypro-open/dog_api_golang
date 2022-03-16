@@ -9,8 +9,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetZones(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func TestZoneIntegration(t *testing.T) {
+	ZoneCreateResponse := DoTestCreateZone(t) //C
+	t.Logf("Id: %v", ZoneCreateResponse.ID)
+	DoTestGetZones(t)                          //R
+	DoTestGetZone(t, ZoneCreateResponse.ID)    //R
+	DoTestUpdateZone(t, ZoneCreateResponse.ID) //U
+	updatedZone := DoTestGetZone(t, ZoneCreateResponse.ID)
+	assert.Equal(t, "name_update", updatedZone.Name)
+	DoTestDeleteZone(t, ZoneCreateResponse.ID) //D
+}
+
+func DoTestGetZones(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetZones(nil)
 	assert.Equal(t, 200, statusCode)
@@ -21,18 +32,8 @@ func TestGetZones(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-func TestZoneIntegration(t *testing.T) {
-	ZoneCreateResponse := DoTestCreateZone(t) //C
-	t.Logf("Id: %v", ZoneCreateResponse.ID)
-	DoTestGetZone(t, ZoneCreateResponse.ID)    //R
-	DoTestUpdateZone(t, ZoneCreateResponse.ID) //U
-	updatedZone := DoTestGetZone(t, ZoneCreateResponse.ID)
-	assert.Equal(t, "name_update", updatedZone.Name)
-	DoTestDeleteZone(t, ZoneCreateResponse.ID) //D
-}
-
 func DoTestGetZone(t *testing.T, ZoneID string) (Zone Zone) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetZone(ZoneID, nil)
 
@@ -47,7 +48,7 @@ func DoTestGetZone(t *testing.T, ZoneID string) (Zone Zone) {
 }
 
 func DoTestUpdateZone(t *testing.T, ZoneID string) (Zone Zone) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ZoneUpdateRequest{
 		IPv4Addresses: []string{"1.2.3.4"},
@@ -66,8 +67,8 @@ func DoTestUpdateZone(t *testing.T, ZoneID string) (Zone Zone) {
 	return res
 }
 
-func DoTestCreateZone(t *testing.T) (zoneCreateReponse ZoneCreateResponse) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func DoTestCreateZone(t *testing.T) (zone Zone) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newZone := ZoneCreateRequest{
 		IPv4Addresses: []string{"1.2.3.4"},
@@ -85,7 +86,7 @@ func DoTestCreateZone(t *testing.T) (zoneCreateReponse ZoneCreateResponse) {
 }
 
 func DoTestDeleteZone(t *testing.T, ZoneID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteZone(ZoneID, nil)
 	assert.Equal(t, 204, statusCode)
