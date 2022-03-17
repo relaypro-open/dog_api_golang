@@ -9,8 +9,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetLinks(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func TestLinkIntegration(t *testing.T) {
+	linkCreateResponse := DoTestCreateLink(t) //C
+	t.Logf("Id: %v", linkCreateResponse.ID)
+	DoTestGetLinks(t)                                         //R
+	DoTestGetLink(t, linkCreateResponse.ID)                   //R
+	linkUpdated := DoTestUpdateLink(t, linkCreateResponse.ID) //U
+	updatedLink := DoTestGetLink(t, linkUpdated.ID)           //Updating Links create new Links
+	assert.Equal(t, "z2", updatedLink.Name)
+	DoTestDeleteLink(t, linkCreateResponse.ID) //D
+}
+
+func DoTestGetLinks(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetLinks(nil)
 	assert.Equal(t, 200, statusCode)
@@ -21,18 +32,8 @@ func TestGetLinks(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-func TestLinkIntegration(t *testing.T) {
-	linkCreateResponse := DoTestCreateLink(t) //C
-	t.Logf("Id: %v", linkCreateResponse.ID)
-	DoTestGetLink(t, linkCreateResponse.ID)                   //R
-	linkUpdated := DoTestUpdateLink(t, linkCreateResponse.ID) //U
-	updatedLink := DoTestGetLink(t, linkUpdated.ID)           //Updating Links create new Links
-	assert.Equal(t, "d2", updatedLink.Name)
-	DoTestDeleteLink(t, linkCreateResponse.ID) //D
-}
-
 func DoTestGetLink(t *testing.T, LinkID string) (Link Link) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetLink(LinkID, nil)
 
@@ -47,7 +48,7 @@ func DoTestGetLink(t *testing.T, LinkID string) (Link Link) {
 }
 
 func DoTestUpdateLink(t *testing.T, LinkID string) (Link Link) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := LinkUpdateRequest{
 		AddressHandling: "union",
@@ -70,7 +71,7 @@ func DoTestUpdateLink(t *testing.T, LinkID string) (Link Link) {
 		ConnectionType: "thumper",
 		Direction:      "bidirectional",
 		Enabled:        false, //Do not test with Enabled: true
-		Name:           "d2",
+		Name:           "z2",
 	}
 	res, statusCode, err := c.UpdateLink(LinkID, update, nil)
 
@@ -79,13 +80,13 @@ func DoTestUpdateLink(t *testing.T, LinkID string) (Link Link) {
 	t.Logf("res: %+v\n", res)
 
 	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
-	assert.Equal(t, "d2", res.Name)
+	assert.Equal(t, "z2", res.Name)
 	assert.Equal(t, 200, statusCode)
 	return res
 }
 
-func DoTestCreateLink(t *testing.T) (linkCreateReponse LinkCreateResponse) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+func DoTestCreateLink(t *testing.T) (link Link) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newLink := LinkCreateRequest{
 		AddressHandling: "union",
@@ -108,7 +109,7 @@ func DoTestCreateLink(t *testing.T) (linkCreateReponse LinkCreateResponse) {
 		ConnectionType: "thumper",
 		Direction:      "bidirectional",
 		Enabled:        false, //Do not test with Enabled: true
-		Name:           "d1",
+		Name:           "z1",
 	}
 
 	res, statusCode, err := c.CreateLink(newLink, nil)
@@ -121,7 +122,7 @@ func DoTestCreateLink(t *testing.T) (linkCreateReponse LinkCreateResponse) {
 }
 
 func DoTestDeleteLink(t *testing.T, LinkID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"),os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteLink(LinkID, nil)
 	assert.Equal(t, 204, statusCode)

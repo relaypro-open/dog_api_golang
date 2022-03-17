@@ -71,10 +71,6 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 	t.Logf("err: %v", err)
 	t.Logf("res: %+v\n", res)
 
-	//assert.NotEmpty(t, res.HostKey, "expecting non-empty hostkey")
-	//UpdatedHost, statusCode, err := c.GetHost(hostID, nil)
-	//assert.Equal(t, 200, statusCode)
-	//assert.Equal(t, UpdatedHost.HostKey, "hostkey-update")
 	return res
 }
 

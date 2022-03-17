@@ -127,14 +127,14 @@ func (c *Client) UpdateLink(LinkID string, LinkUpdate LinkUpdateRequest, options
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateLink(linkNew LinkCreateRequest, options *LinkListOptions) (linkCreateResponse LinkCreateResponse, statusCode int, Error error) {
+func (c *Client) CreateLink(linkNew LinkCreateRequest, options *LinkListOptions) (link Link, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&LinkCreateResponse{}).
+		SetResult(&Link{}).
 		SetBody(linkNew).
 		Post("/link")
 
-	result := (*resp.Result().(*LinkCreateResponse))
+	result := (*resp.Result().(*Link))
 	return result, resp.StatusCode(), err
 }
 
