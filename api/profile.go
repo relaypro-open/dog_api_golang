@@ -124,14 +124,14 @@ func (c *Client) UpdateProfile(ProfileID string, ProfileUpdate ProfileUpdateRequ
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateProfile(profileNew ProfileCreateRequest, options *ProfileListOptions) (profileCreateResponse ProfileCreateResponse, statusCode int, Error error) {
+func (c *Client) CreateProfile(profileNew ProfileCreateRequest, options *ProfileListOptions) (profile Profile, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&ProfileCreateResponse{}).
+		SetResult(&Profile{}).
 		SetBody(profileNew).
 		Post("/profile")
 
-	result := (*resp.Result().(*ProfileCreateResponse))
+	result := (*resp.Result().(*Profile))
 	return result, resp.StatusCode(), err
 }
 
