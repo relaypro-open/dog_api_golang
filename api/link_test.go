@@ -12,6 +12,7 @@ import (
 func TestLinkIntegration(t *testing.T) {
 	linkCreateResponse := DoTestCreateLink(t) //C
 	t.Logf("Id: %v", linkCreateResponse.ID)
+	DoTestGetExternals(t)                                     //R
 	DoTestGetLinks(t)                                         //R
 	DoTestGetLink(t, linkCreateResponse.ID)                   //R
 	linkUpdated := DoTestUpdateLink(t, linkCreateResponse.ID) //U
@@ -131,4 +132,31 @@ func DoTestDeleteLink(t *testing.T, LinkID string) {
 	t.Logf("res: %+v\n", res)
 
 	assert.Empty(t, res, "expecting empty response")
+}
+
+func DoTestGetExternals(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+
+	res, statusCode, err := c.GetExternals(nil)
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res[0]: %+v\n", res[0])
+
+	assert.NotEmpty(t, res[0].ID, "expecting non-empty ID")
+}
+
+func DoTestGetExternal(t *testing.T, ExternalID string) (External External) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+
+	res, statusCode, err := c.GetExternal(ExternalID, nil)
+
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+
+	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
+	assert.Equal(t, res.ID, ExternalID)
+	return res
 }
