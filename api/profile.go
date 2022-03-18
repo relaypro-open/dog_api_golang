@@ -5,11 +5,11 @@ import (
 )
 
 type Profile struct {
-	ID          string `json:"id"`
 	Created     int    `json:"created"`
 	Description string `json:"description"`
-	Rules       Rules  `json:"rules"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
+	Rules       Rules  `json:"rules"`
 	Version     string `json:"version"`
 }
 
@@ -19,19 +19,19 @@ type Rules struct {
 }
 
 type Rule struct {
-	Action      string   `json:"action"`
-	Active      bool     `json:"active"`
-	Comment     string   `json:"comment"`
-	Environment []string `json:"environments"`
-	Group       string   `json:"group"`
-	GroupType   string   `json:"group_type"`
-	Interface   string   `json:"interface"`
-	Log         bool     `json:"log"`
-	LogPrefix   string   `json:"log_prefix"`
-	Order       int      `json:"order"`
-	Service     string   `json:"service"`
-	States      []string `json:"states"`
-	Type        string   `json:"type"`
+	Action       string   `json:"action"`
+	Active       bool     `json:"active"`
+	Comment      string   `json:"comment"`
+	Environments []string `json:"environments"`
+	Group        string   `json:"group"`
+	GroupType    string   `json:"group_type"`
+	Interface    string   `json:"interface"`
+	Log          bool     `json:"log"`
+	LogPrefix    string   `json:"log_prefix"`
+	Order        int      `json:"order"`
+	Service      string   `json:"service"`
+	States       []string `json:"states"`
+	Type         string   `json:"type"`
 }
 
 type ProfileListOptions struct {
