@@ -18,7 +18,6 @@ func TestProfileIntegration(t *testing.T) {
 	updatedProfile := DoTestGetProfile(t, profileUpdated.ID)           //Updating Profiles create new Profiles
 	assert.Equal(t, "name_update", updatedProfile.Name)
 	DoTestDeleteProfile(t, profileCreateResponse.ID) //D
-	DoTestDeleteProfile(t, updatedProfile.ID)        //D
 }
 
 func DoTestGetProfiles(t *testing.T) {
@@ -56,19 +55,19 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 		Rules: Rules{
 			Inbound: []Rule{
 				Rule{
-					Action:      "ACCEPT",
-					Active:      true,
-					Comment:     "",
-					Environment: []string{},
-					Group:       "88fb0848-845b-46ce-843b-541c05d06014",
-					GroupType:   "ZONE",
-					Interface:   "",
-					Log:         false,
-					LogPrefix:   "",
-					Order:       1,
-					Service:     "any",
-					States:      []string{},
-					Type:        "BASIC",
+					Action:       "ACCEPT",
+					Active:       true,
+					Comment:      "",
+					Environments: []string{},
+					Group:        "88fb0848-845b-46ce-843b-541c05d06014",
+					GroupType:    "ZONE",
+					Interface:    "",
+					Log:          false,
+					LogPrefix:    "",
+					Order:        1,
+					Service:      "any",
+					States:       []string{},
+					Type:         "BASIC",
 				},
 			},
 			Outbound: []Rule{},
@@ -96,19 +95,19 @@ func DoTestCreateProfile(t *testing.T) (profile Profile) {
 		Rules: Rules{
 			Inbound: []Rule{
 				Rule{
-					Action:      "ACCEPT",
-					Active:      true,
-					Comment:     "",
-					Environment: []string{},
-					Group:       "88fb0848-845b-46ce-843b-541c05d06014",
-					GroupType:   "ZONE",
-					Interface:   "",
-					Log:         false,
-					LogPrefix:   "",
-					Order:       1,
-					Service:     "any",
-					States:      []string{},
-					Type:        "BASIC",
+					Action:       "ACCEPT",
+					Active:       true,
+					Comment:      "",
+					Environments: []string{},
+					Group:        "88fb0848-845b-46ce-843b-541c05d06014",
+					GroupType:    "ZONE",
+					Interface:    "",
+					Log:          false,
+					LogPrefix:    "",
+					Order:        1,
+					Service:      "any",
+					States:       []string{},
+					Type:         "BASIC",
 				},
 			},
 			Outbound: []Rule{},
