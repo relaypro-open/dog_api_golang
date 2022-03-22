@@ -12,7 +12,7 @@ type ZonesListOptions struct {
 }
 
 type Zone struct {
-	Created       int      `json:"created"`
+	Created       string   `json:"created"`
 	ID            string   `json:"id"`
 	IPv4Addresses []string `json:"ipv4_addresses"`
 	IPv6Addresses []string `json:"ipv6_addresses"`

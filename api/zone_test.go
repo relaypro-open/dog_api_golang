@@ -25,6 +25,7 @@ func DoTestGetZones(t *testing.T) {
 
 	res, statusCode, err := c.GetZones(nil)
 	assert.Equal(t, 200, statusCode)
+	t.Logf("err: %+v\n", err)
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
 	t.Logf("res[0].ID %s\n", res[0].ID)
