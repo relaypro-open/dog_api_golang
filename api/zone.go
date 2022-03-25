@@ -86,6 +86,30 @@ func (c *Client) GetZone(ZoneID string, options *ZoneListOptions) (zone Zone, st
 
 }
 
+func (c *Client) GetZoneByName(ZoneName string, options *ZoneListOptions) (zone Zone, statusCode int, Error error) {
+	limit := 100
+	page := 1
+	if options != nil {
+		limit = options.Limit
+		page = options.Page
+	}
+
+	resp, err := c.Client.R().
+		SetResult(&Zone{}).
+		SetQueryParams(map[string]string{
+			"page_no": strconv.Itoa(page),
+			"limit":   strconv.Itoa(limit),
+		}).
+		SetPathParams(map[string]string{
+			"ZoneName": ZoneName,
+		}).
+		Get("/zone?name={ZoneName}")
+
+	result := (*resp.Result().(*Zone))
+	return result, resp.StatusCode(), err
+
+}
+
 func (c *Client) UpdateZone(ZoneID string, ZoneUpdate ZoneUpdateRequest, options *ZoneListOptions) (zone Zone, statusCode int, Error error) {
 
 	resp, err := c.Client.R().

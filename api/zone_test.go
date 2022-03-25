@@ -12,9 +12,10 @@ import (
 func TestZoneIntegration(t *testing.T) {
 	ZoneCreateResponse := DoTestCreateZone(t) //C
 	t.Logf("Id: %v", ZoneCreateResponse.ID)
-	DoTestGetZones(t)                          //R
-	DoTestGetZone(t, ZoneCreateResponse.ID)    //R
-	DoTestUpdateZone(t, ZoneCreateResponse.ID) //U
+	DoTestGetZones(t)                               //R
+	DoTestGetZone(t, ZoneCreateResponse.ID)         //R
+	DoTestGetZoneByName(t, ZoneCreateResponse.Name) //R
+	DoTestUpdateZone(t, ZoneCreateResponse.ID)      //U
 	updatedZone := DoTestGetZone(t, ZoneCreateResponse.ID)
 	assert.Equal(t, "name_update", updatedZone.Name)
 	DoTestDeleteZone(t, ZoneCreateResponse.ID) //D
@@ -45,6 +46,21 @@ func DoTestGetZone(t *testing.T, ZoneID string) (Zone Zone) {
 
 	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
 	assert.Equal(t, res.ID, ZoneID)
+	return res
+}
+
+func DoTestGetZoneByName(t *testing.T, ZoneName string) (Zone Zone) {
+	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+
+	res, statusCode, err := c.GetZoneByName(ZoneName, nil)
+
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+
+	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
+	assert.Equal(t, res.Name, ZoneName)
 	return res
 }
 
