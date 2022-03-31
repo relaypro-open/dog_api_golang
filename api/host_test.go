@@ -56,7 +56,6 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	updateHost := HostUpdateRequest{
-		Active:      "active",
 		Environment: "*",
 		Group:       "update_group",
 		HostKey:     "update_hostkey",
@@ -78,7 +77,6 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newHost := HostCreateRequest{
-		Active:      "active",
 		Environment: "*",
 		Group:       "new_group",
 		HostKey:     "new_hostkey",
@@ -100,7 +98,6 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 //	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 //
 //	newHost := HostCreateRequest{
-//		Active:      "active",
 //		Environment: "*",
 //		Group:       "new_group",
 //		HostKey:     "new_hostkey",

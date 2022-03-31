@@ -5,7 +5,6 @@ import (
 )
 
 type Host struct {
-	Active      string `json:"active"`
 	Environment string `json:"environment"`
 	Group       string `json:"group"`
 	ID          string `json:"id"`
@@ -21,7 +20,6 @@ type HostListOptions struct {
 
 // HostUpdateRequest is a struct for the request object required to update a Host
 type HostUpdateRequest struct {
-	Active      string `json:"active,omitempty"`
 	Environment string `json:"environment,omitempty"`
 	Group       string `json:"group,omitempty"`
 	ID          string `json:"id,omitempty"`
@@ -31,7 +29,6 @@ type HostUpdateRequest struct {
 }
 
 type HostCreateRequest struct {
-	Active      string `json:"active"`
 	Environment string `json:"environment"`
 	Group       string `json:"group"`
 	HostKey     string `json:"hostkey"`
@@ -40,7 +37,6 @@ type HostCreateRequest struct {
 }
 
 type HostCreateResponse struct {
-	Active      string `json:"active"`
 	Environment string `json:"environment"`
 	Group       string `json:"group"`
 	ID          string `json:"id"`
