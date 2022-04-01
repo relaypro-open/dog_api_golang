@@ -5,23 +5,23 @@ import (
 )
 
 type Link struct {
-	ID              string     `json:"id"`
-	AddressHandling string     `json:"address_handling"`
-	Connection      Connection `json:"connection"`
-	ConnectionType  string     `json:"connection_type"`
-	Direction       string     `json:"direction"`
-	Enabled         bool       `json:"enabled"`
-	Name            string     `json:"name"`
+	ID              string      `json:"id"`
+	AddressHandling string      `json:"address_handling"`
+	Connection      *Connection `json:"connection"`
+	ConnectionType  string      `json:"connection_type"`
+	Direction       string      `json:"direction"`
+	Enabled         bool        `json:"enabled"`
+	Name            string      `json:"name"`
 }
 
 type Connection struct {
-	ApiPort     int        `json:"api_port"`
-	Host        string     `json:"host"`
-	Password    string     `json:"password"`
-	Port        int        `json:"port"`
-	SSLOptions  SSLOptions `json:"ssl_options"`
-	User        string     `json:"user"`
-	VirtualHost string     `json:"virtual_host"`
+	ApiPort     int         `json:"api_port"`
+	Host        string      `json:"host"`
+	Password    string      `json:"password"`
+	Port        int         `json:"port"`
+	SSLOptions  *SSLOptions `json:"ssl_options"`
+	User        string      `json:"user"`
+	VirtualHost string      `json:"virtual_host"`
 }
 
 type SSLOptions struct {

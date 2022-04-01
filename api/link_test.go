@@ -44,6 +44,8 @@ func DoTestGetLink(t *testing.T, LinkID string) (Link Link) {
 	t.Logf("res: %+v\n", res)
 
 	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
+	assert.NotEmpty(t, res.Connection, "expecting non-empty Connection")
+	assert.NotEmpty(t, res.Connection.SSLOptions, "expecting non-empty SSLOptions")
 	assert.Equal(t, res.ID, LinkID)
 	return res
 }
@@ -58,7 +60,7 @@ func DoTestUpdateLink(t *testing.T, LinkID string) (Link Link) {
 			Host:     "host",
 			Password: "password",
 			Port:     2345,
-			SSLOptions: SSLOptions{
+			SSLOptions: &SSLOptions{
 				CaCertFile:           "cacertfile",
 				CertFile:             "certfile",
 				FailIfNoPeerCert:     true,
@@ -96,7 +98,7 @@ func DoTestCreateLink(t *testing.T) (link Link) {
 			Host:     "host",
 			Password: "password",
 			Port:     7890,
-			SSLOptions: SSLOptions{
+			SSLOptions: &SSLOptions{
 				CaCertFile:           "cacertfile",
 				CertFile:             "certfile",
 				FailIfNoPeerCert:     true,
