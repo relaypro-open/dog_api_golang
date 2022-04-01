@@ -40,21 +40,21 @@ type LinkListOptions struct {
 
 // LinkUpdateRequest is a struct for the request object required to update a Link
 type LinkUpdateRequest struct {
-	AddressHandling string     `json:"address_handling"`
-	Connection      Connection `json:"connection"`
-	ConnectionType  string     `json:"connection_type"`
-	Direction       string     `json:"direction"`
-	Enabled         bool       `json:"enabled"`
-	Name            string     `json:"name"`
+	AddressHandling string      `json:"address_handling"`
+	Connection      *Connection `json:"connection"`
+	ConnectionType  string      `json:"connection_type"`
+	Direction       string      `json:"direction"`
+	Enabled         bool        `json:"enabled"`
+	Name            string      `json:"name"`
 }
 
 type LinkCreateRequest struct {
-	AddressHandling string     `json:"address_handling"`
-	Connection      Connection `json:"connection"`
-	ConnectionType  string     `json:"connection_type"`
-	Direction       string     `json:"direction"`
-	Enabled         bool       `json:"enabled"`
-	Name            string     `json:"name"`
+	AddressHandling string      `json:"address_handling"`
+	Connection      *Connection `json:"connection"`
+	ConnectionType  string      `json:"connection_type"`
+	Direction       string      `json:"direction"`
+	Enabled         bool        `json:"enabled"`
+	Name            string      `json:"name"`
 }
 
 type LinkCreateResponse struct {
