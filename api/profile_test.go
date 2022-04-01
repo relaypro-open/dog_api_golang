@@ -52,7 +52,7 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 
 	update := ProfileUpdateRequest{
 		Description: "description_update",
-		Rules: Rules{
+		Rules: &Rules{
 			Inbound: []Rule{
 				Rule{
 					Action:       "ACCEPT",
@@ -92,7 +92,7 @@ func DoTestCreateProfile(t *testing.T) (profile Profile) {
 
 	newProfile := ProfileCreateRequest{
 		Description: "description",
-		Rules: Rules{
+		Rules: &Rules{
 			Inbound: []Rule{
 				Rule{
 					Action:       "ACCEPT",

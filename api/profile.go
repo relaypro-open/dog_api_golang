@@ -9,7 +9,7 @@ type Profile struct {
 	Description string `json:"description"`
 	ID          string `json:"id"`
 	Name        string `json:"name"`
-	Rules       Rules  `json:"rules"`
+	Rules       *Rules `json:"rules"`
 	Version     string `json:"version"`
 }
 
@@ -69,14 +69,14 @@ func (c *Client) GetProfiles(options *ProfilesListOptions) (profilesList Profile
 // ProfileUpdateRequest is a struct for the request object required to update a Profile
 type ProfileUpdateRequest struct {
 	Description string `json:"description,omitempty"`
-	Rules       Rules  `json:"rules,omitempty"`
+	Rules       *Rules `json:"rules,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Version     string `json:"version,omitempty"`
 }
 
 type ProfileCreateRequest struct {
 	Description string `json:"description,omitempty"`
-	Rules       Rules  `json:"rules,omitempty"`
+	Rules       *Rules `json:"rules,omitempty"`
 	Name        string `json:"name"`
 	Version     string `json:"version,omitempty"`
 }
