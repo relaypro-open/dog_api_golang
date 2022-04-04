@@ -14,8 +14,8 @@ type Profile struct {
 }
 
 type Rules struct {
-	Inbound  []Rule `json:"inbound"`
-	Outbound []Rule `json:"outbound"`
+	Inbound  []*Rule `json:"inbound"`
+	Outbound []*Rule `json:"outbound"`
 }
 
 type Rule struct {
