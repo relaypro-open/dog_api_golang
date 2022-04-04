@@ -7,7 +7,7 @@ import (
 type Service struct {
 	//Created  int        `json:"created"`
 	ID       string          `json:"id"`
-	Services *[]PortProtocol `json:"services"`
+	Services []*PortProtocol `json:"services"`
 	Name     string          `json:"name"`
 	Version  int             `json:"version"`
 }
@@ -23,13 +23,13 @@ type ServiceListOptions struct {
 }
 
 type ServiceUpdateRequest struct {
-	Services *[]PortProtocol `json:"services"`
+	Services []*PortProtocol `json:"services"`
 	Name     string          `json:"name"`
 	Version  int             `json:"version"`
 }
 
 type ServiceCreateRequest struct {
-	Services *[]PortProtocol `json:"services"`
+	Services []*PortProtocol `json:"services"`
 	Name     string          `json:"name"`
 	Version  int             `json:"version"`
 }
