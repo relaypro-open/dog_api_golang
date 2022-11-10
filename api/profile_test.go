@@ -51,7 +51,6 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ProfileUpdateRequest{
-		Description: "description_update",
 		Rules: &Rules{
 			Inbound: []*Rule{
 				&Rule{
@@ -91,7 +90,6 @@ func DoTestCreateProfile(t *testing.T) (profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newProfile := ProfileCreateRequest{
-		Description: "description",
 		Rules: &Rules{
 			Inbound: []*Rule{
 				&Rule{
