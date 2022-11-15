@@ -57,7 +57,7 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 		ProfileVersion: "profile_version_update",
 		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
-				Region: "test-region",
+				Region: "us-test-region",
 				SgId: "sg-test",
 			},
 		},
@@ -84,7 +84,7 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 		ProfileVersion: "profile_version",
 		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
-				Region: "test-region",
+				Region: "us-test-region",
 				SgId: "sg-test",
 			},
 		},
