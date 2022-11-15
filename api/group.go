@@ -20,7 +20,7 @@ type GroupListOptions struct {
 }
 
 type Ec2SecurityGroupIds struct {
-	Region string `json:"regions"`
+	Region string `json:"region"`
 	SgId   string `json:"sgid"`
 }
 
