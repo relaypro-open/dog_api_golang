@@ -7,10 +7,11 @@ import (
 type Group struct {
 	ID string `json:"id"`
 	//Created        int    `json:"created,omitempty"` //TODO: created has both int and string entries
-	Description    string `json:"description"`
-	Name           string `json:"name"`
-	ProfileName    string `json:"profile_name"`
-	ProfileVersion string `json:"profile_version"`
+	Description         string `json:"description"`
+	Name                string `json:"name"`
+	ProfileName         string `json:"profile_name"`
+	ProfileVersion      string `json:"profile_version"`
+	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
 }
 
 type GroupListOptions struct {
@@ -18,19 +19,26 @@ type GroupListOptions struct {
 	Page  int `json:"page"`
 }
 
+type Ec2SecurityGroupIds struct {
+	Region string `json:"regions"`
+	SgId   string `json:"sgid"`
+}
+
 // GroupUpdateRequest is a struct for the request object required to update a Group
 type GroupUpdateRequest struct {
-	Description    string `json:"description,omitempty"`
-	Name           string `json:"name,omitempty"`
-	ProfileName    string `json:"profile_name,omitempty"`
-	ProfileVersion string `json:"profile_version,omitempty"`
+	Description         string `json:"description,omitempty"`
+	Name                string `json:"name,omitempty"`
+	ProfileName         string `json:"profile_name,omitempty"`
+	ProfileVersion      string `json:"profile_version,omitempty"`
+	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
 }
 
 type GroupCreateRequest struct {
-	Description    string `json:"description,omitempty"`
-	Name           string `json:"name"`
-	ProfileName    string `json:"profile_name,omitempty"`
-	ProfileVersion string `json:"profile_version,omitempty"`
+	Description         string `json:"description,omitempty"`
+	Name                string `json:"name"`
+	ProfileName         string `json:"profile_name,omitempty"`
+	ProfileVersion      string `json:"profile_version,omitempty"`
+	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
 }
 
 type GroupCreateResponse struct {

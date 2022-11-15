@@ -55,6 +55,12 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 		Name:           "name_update",
 		ProfileName:    "profile_name_update",
 		ProfileVersion: "profile_version_update",
+		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+			&Ec2SecurityGroupIds{
+				Region: "test-region",
+				SgId: "sg-test",
+			},
+		},
 	}
 	res, statusCode, err := c.UpdateGroup(GroupID, update, nil)
 
@@ -76,6 +82,12 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 		Name:           "name",
 		ProfileName:    "profile_name",
 		ProfileVersion: "profile_version",
+		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+			&Ec2SecurityGroupIds{
+				Region: "test-region",
+				SgId: "sg-test",
+			},
+		},
 	}
 	res, statusCode, err := c.CreateGroup(newGroup, nil)
 	assert.Equal(t, 201, statusCode)
