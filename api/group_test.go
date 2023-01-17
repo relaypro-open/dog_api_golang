@@ -61,7 +61,7 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: map[string]interface{} {
+		Vars: map[string]string {
 			"test": "group_test",
 		},
 	}
@@ -91,7 +91,7 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: map[string]interface{} {
+		Vars: map[string]string {
 			"test": "group_test",
 		},
 	}

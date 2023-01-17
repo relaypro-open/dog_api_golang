@@ -61,7 +61,7 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: 	     map[string]interface{} {
+		Vars: 	     map[string]string {
 			"test": "host_test",
 		},
 	}
@@ -85,7 +85,7 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: 	     map[string]interface{} {
+		Vars: 	     map[string]string {
 			"test": "host_test",
 		},
 	}

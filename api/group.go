@@ -11,7 +11,7 @@ type Group struct {
 	ProfileName         string `json:"profile_name"`
 	ProfileVersion      string `json:"profile_version"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars		    map[string]interface{} `json:"vars"`
+	Vars		    map[string]string `json:"vars"`
 }
 
 type GroupListOptions struct {
@@ -31,7 +31,7 @@ type GroupUpdateRequest struct {
 	ProfileName         string `json:"profile_name,omitempty"`
 	ProfileVersion      string `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars		    map[string]interface{} `json:"vars"`
+	Vars		    map[string]string `json:"vars"`
 }
 
 type GroupCreateRequest struct {
@@ -40,7 +40,7 @@ type GroupCreateRequest struct {
 	ProfileName         string `json:"profile_name,omitempty"`
 	ProfileVersion      string `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars		    map[string]interface{} `json:"vars"`
+	Vars		    map[string]string `json:"vars"`
 }
 
 type GroupCreateResponse struct {
