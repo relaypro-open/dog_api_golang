@@ -61,6 +61,9 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 				SgId: "sg-test",
 			},
 		},
+		Vars: map[string]interface{} {
+			"test": "group_test",
+		},
 	}
 	res, statusCode, err := c.UpdateGroup(GroupID, update, nil)
 
@@ -87,6 +90,9 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 				Region: "us-test-region",
 				SgId: "sg-test",
 			},
+		},
+		Vars: map[string]interface{} {
+			"test": "group_test",
 		},
 	}
 	res, statusCode, err := c.CreateGroup(newGroup, nil)

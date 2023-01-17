@@ -58,9 +58,12 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 	updateHost := HostUpdateRequest{
 		Environment: "*",
 		Group:       "update_group",
-		HostKey:     "update_hostkey",
+		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
+		Vars: 	     map[string]interface{} {
+			"test": "host_test",
+		},
 	}
 	res, statusCode, err := c.UpdateHost(hostID, updateHost, nil)
 
@@ -82,6 +85,9 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
+		Vars: 	     map[string]interface{} {
+			"test": "host_test",
+		},
 	}
 
 	res, statusCode, err := c.CreateHost(newHost, nil)
