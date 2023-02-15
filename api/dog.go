@@ -8,10 +8,10 @@ type Client struct {
 	*resty.Client
 }
 
-func NewClient(apiKey string, apiEndpoint string) *Client {
+func NewClient(apiToken string, apiEndpoint string) *Client {
 	client := Client{}
 	client.Client = resty.New()
-	client.SetHeader("apikey", apiKey)
+	client.SetAuthToken(apiToken)
 	client.SetHostURL(apiEndpoint)
 	// Headers for all request
 	client.SetHeader("Accept", "application/json")

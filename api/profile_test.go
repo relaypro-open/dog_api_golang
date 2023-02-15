@@ -21,7 +21,7 @@ func TestProfileIntegration(t *testing.T) {
 }
 
 func DoTestGetProfiles(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetProfiles(nil)
 	assert.Equal(t, 200, statusCode)
@@ -33,7 +33,7 @@ func DoTestGetProfiles(t *testing.T) {
 }
 
 func DoTestGetProfile(t *testing.T, ProfileID string) (Profile Profile) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetProfile(ProfileID, nil)
 
@@ -48,7 +48,7 @@ func DoTestGetProfile(t *testing.T, ProfileID string) (Profile Profile) {
 }
 
 func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ProfileUpdateRequest{
 		Rules: &Rules{
@@ -87,7 +87,7 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 }
 
 func DoTestCreateProfile(t *testing.T) (profile Profile) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newProfile := ProfileCreateRequest{
 		Rules: &Rules{
@@ -124,7 +124,7 @@ func DoTestCreateProfile(t *testing.T) (profile Profile) {
 }
 
 func DoTestDeleteProfile(t *testing.T, ProfileID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteProfile(ProfileID, nil)
 	assert.Equal(t, 204, statusCode)
