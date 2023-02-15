@@ -21,7 +21,7 @@ func TestServiceIntegration(t *testing.T) {
 }
 
 func DoTestGetServices(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetServices(nil)
 	assert.Equal(t, 200, statusCode)
@@ -33,7 +33,7 @@ func DoTestGetServices(t *testing.T) {
 }
 
 func DoTestGetService(t *testing.T, ServiceID string) (Service Service) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetService(ServiceID, nil)
 
@@ -48,7 +48,7 @@ func DoTestGetService(t *testing.T, ServiceID string) (Service Service) {
 }
 
 func DoTestUpdateService(t *testing.T, ServiceID string) (Service Service) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ServiceUpdateRequest{
 		Services: []*PortProtocol{
@@ -73,7 +73,7 @@ func DoTestUpdateService(t *testing.T, ServiceID string) (Service Service) {
 }
 
 func DoTestCreateService(t *testing.T) (service Service) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newService := ServiceCreateRequest{
 		Services: []*PortProtocol{
@@ -95,7 +95,7 @@ func DoTestCreateService(t *testing.T) (service Service) {
 }
 
 func DoTestDeleteService(t *testing.T, ServiceID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteService(ServiceID, nil)
 	assert.Equal(t, 204, statusCode)

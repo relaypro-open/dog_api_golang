@@ -14,7 +14,7 @@ package api
 //}
 //
 //func DoTestGetExternals(t *testing.T) {
-//	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 //
 //	res, statusCode, err := c.GetExternals(nil)
 //	assert.Equal(t, 200, statusCode)
@@ -26,7 +26,7 @@ package api
 //}
 //
 //func DoTestGetExternal(t *testing.T, ExternalID string) (External External) {
-//	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 //
 //	res, statusCode, err := c.GetExternal(ExternalID, nil)
 //

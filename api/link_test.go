@@ -21,7 +21,7 @@ func TestLinkIntegration(t *testing.T) {
 }
 
 func DoTestGetLinks(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetLinks(nil)
 	assert.Equal(t, 200, statusCode)
@@ -33,7 +33,7 @@ func DoTestGetLinks(t *testing.T) {
 }
 
 func DoTestGetLink(t *testing.T, LinkID string) (Link Link) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetLink(LinkID, nil)
 
@@ -50,7 +50,7 @@ func DoTestGetLink(t *testing.T, LinkID string) (Link Link) {
 }
 
 func DoTestUpdateLink(t *testing.T, LinkID string) (Link Link) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := LinkUpdateRequest{
 		AddressHandling: "union",
@@ -88,7 +88,7 @@ func DoTestUpdateLink(t *testing.T, LinkID string) (Link Link) {
 }
 
 func DoTestCreateLink(t *testing.T) (link Link) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newLink := LinkCreateRequest{
 		AddressHandling: "union",
@@ -124,7 +124,7 @@ func DoTestCreateLink(t *testing.T) (link Link) {
 }
 
 func DoTestDeleteLink(t *testing.T, LinkID string) {
-	c := NewClient(os.Getenv("DOG_API_KEY"), os.Getenv("DOG_API_ENDPOINT"))
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.DeleteLink(LinkID, nil)
 	assert.Equal(t, 204, statusCode)
