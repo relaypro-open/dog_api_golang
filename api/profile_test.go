@@ -51,26 +51,7 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ProfileUpdateRequest{
-		Rules: &Rules{
-			Inbound: []*Rule{
-				&Rule{
-					Action:       "ACCEPT",
-					Active:       true,
-					Comment:      "",
-					Environments: []string{},
-					Group:        "cpz_any",
-					GroupType:    "ZONE",
-					Interface:    "",
-					Log:          false,
-					LogPrefix:    "",
-					Order:        1,
-					Service:      "any",
-					States:       []string{},
-					Type:         "BASIC",
-				},
-			},
-			Outbound: []*Rule{},
-		},
+		RuleId:  "rule_id",
 		Name:    "name_update",
 		Version: "version_update",
 	}
@@ -90,26 +71,7 @@ func DoTestCreateProfile(t *testing.T) (profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newProfile := ProfileCreateRequest{
-		Rules: &Rules{
-			Inbound: []*Rule{
-				&Rule{
-					Action:       "ACCEPT",
-					Active:       true,
-					Comment:      "",
-					Environments: []string{},
-					Group:        "cpz_any",
-					GroupType:    "ZONE",
-					Interface:    "",
-					Log:          false,
-					LogPrefix:    "",
-					Order:        1,
-					Service:      "any",
-					States:       []string{},
-					Type:         "BASIC",
-				},
-			},
-			Outbound: []*Rule{},
-		},
+		RuleId:  "rule_id",
 		Name:    "name",
 		Version: "version",
 	}

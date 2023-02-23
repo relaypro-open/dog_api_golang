@@ -7,37 +7,16 @@ import (
 type Profile struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
-	Rules       *Rules `json:"rules"`
+	RuleId      string `json:"rules"`
 	Version     string `json:"version"`
 }
 
-type Rules struct {
-	Inbound  []*Rule `json:"inbound"`
-	Outbound []*Rule `json:"outbound"`
-}
-
-type Rule struct {
-	Action       string   `json:"action"`
-	Active       bool     `json:"active"`
-	Comment      string   `json:"comment"`
-	Environments []string `json:"environments"`
-	Group        string   `json:"group"`
-	GroupType    string   `json:"group_type"`
-	Interface    string   `json:"interface"`
-	Log          bool     `json:"log"`
-	LogPrefix    string   `json:"log_prefix"`
-	Order        int      `json:"order"`
-	Service      string   `json:"service"`
-	States       []string `json:"states"`
-	Type         string   `json:"type"`
-}
+type ProfilesList []Profile
 
 type ProfileListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
 }
-
-type ProfilesList []Profile
 
 type ProfilesListOptions struct {
 	Limit int `json:"limit"`
@@ -66,13 +45,13 @@ func (c *Client) GetProfiles(options *ProfilesListOptions) (profilesList Profile
 
 // ProfileUpdateRequest is a struct for the request object required to update a Profile
 type ProfileUpdateRequest struct {
-	Rules       *Rules `json:"rules,omitempty"`
+	RuleId      string `json:"rules,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Version     string `json:"version,omitempty"`
 }
 
 type ProfileCreateRequest struct {
-	Rules       *Rules `json:"rules,omitempty"`
+	RuleId      string `json:"rules,omitempty"`
 	Name        string `json:"name"`
 	Version     string `json:"version,omitempty"`
 }
