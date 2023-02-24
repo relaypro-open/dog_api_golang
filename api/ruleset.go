@@ -4,20 +4,22 @@ import (
 	"strconv"
 )
 
-type Rule struct {
+type Ruleset struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
-	Rules       *FwRules `json:"rules"`
+	Rules       *Rules `json:"rules"`
 }
 
-type RuleUpdateRequest struct {
+type RulesetList []Ruleset
+
+type RulesetUpdateRequest struct {
 	Name        string `json:"name"`
-	Rules       *FwRules `json:"rules"`
+	Rules       *Rules `json:"rules,omitempty"`
 }
 
-type RuleCreateRequest struct {
+type RulesetCreateRequest struct {
 	Name        string `json:"name"`
-	Rules       *FwRules `json:"rules"`
+	Rules       *Rules `json:"rules,omitempty"`
 }
 
 type RulesList []Rule
@@ -32,30 +34,17 @@ type RuleListOptions struct {
 	Page  int `json:"page"`
 }
 
-// ruleUpdateRequest is a struct for the request object required to update a rule
-type FwRuleUpdateRequest struct {
-	IPv4Addresses []string `json:"ipv4_addresses"`
-	IPv6Addresses []string `json:"ipv6_addresses"`
-	Name          string   `json:"name"`
-}
-
-type FwRuleCreateRequest struct {
-	IPv4Addresses []string `json:"ipv4_addresses"`
-	IPv6Addresses []string `json:"ipv6_addresses"`
-	Name          string   `json:"name"`
-}
-
-type RuleCreateResponse struct {
+type RulesetCreateResponse struct {
 	ID     string `json:"id"`
 	Result string `json:"result"`
 }
 
-type FwRules struct {
-	Inbound  []*FwRule `json:"inbound"`
-	Outbound []*FwRule `json:"outbound"`
+type Rules struct {
+	Inbound  []*Rule `json:"inbound"`
+	Outbound []*Rule `json:"outbound"`
 }
 
-type FwRule struct {
+type Rule struct {
 	Action       string   `json:"action"`
 	Active       bool     `json:"active"`
 	Comment      string   `json:"comment"`
@@ -71,7 +60,7 @@ type FwRule struct {
 	Type         string   `json:"type"`
 }
 
-func (c *Client) GetRules(options *RulesListOptions) (rulesList RulesList, statusCode int, Error error) {
+func (c *Client) GetRulesets(options *RulesListOptions) (rulesetList RulesetList, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -80,18 +69,18 @@ func (c *Client) GetRules(options *RulesListOptions) (rulesList RulesList, statu
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&RulesList{}).
+		SetResult(&RulesetList{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
-		Get("/rules")
+		Get("/rulesets")
 
-	result := (*resp.Result().(*RulesList))
+	result := (*resp.Result().(*RulesetList))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) GetRule(ruleID string, options *RuleListOptions) (rule Rule, statusCode int, Error error) {
+func (c *Client) GetRuleset(rulesetId string, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -100,22 +89,22 @@ func (c *Client) GetRule(ruleID string, options *RuleListOptions) (rule Rule, st
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&Rule{}).
+		SetResult(&Ruleset{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
 		SetPathParams(map[string]string{
-			"ruleID": ruleID,
+			"rulesetID": rulesetId,
 		}).
-		Get("/rule/{ruleID}")
+		Get("/ruleset/{rulesetID}")
 
-	result := (*resp.Result().(*Rule))
+	result := (*resp.Result().(*Ruleset))
 	return result, resp.StatusCode(), err
 
 }
 
-func (c *Client) GetRuleByName(ruleName string, options *RuleListOptions) (rule Rule, statusCode int, Error error) {
+func (c *Client) GetRulesetByName(rulesetName string, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -124,47 +113,47 @@ func (c *Client) GetRuleByName(ruleName string, options *RuleListOptions) (rule 
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&Rule{}).
+		SetResult(&Ruleset{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
 		SetPathParams(map[string]string{
-			"ruleName": ruleName,
+			"rulesetName": rulesetName,
 		}).
-		Get("/rule?name={ruleName}")
+		Get("/ruleset?name={rulesetName}")
 
-	result := (*resp.Result().(*Rule))
+	result := (*resp.Result().(*Ruleset))
 	return result, resp.StatusCode(), err
 
 }
 
-func (c *Client) UpdateRule(ruleID string, ruleUpdate RuleUpdateRequest, options *RuleListOptions) (rule Rule, statusCode int, Error error) {
+func (c *Client) UpdateRuleset(rulesetId string, rulesetUpdate RulesetUpdateRequest, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&Rule{}).
+		SetResult(&Ruleset{}).
 		SetPathParams(map[string]string{
-			"ruleID": ruleID,
+			"rulesetId": rulesetId,
 		}).
-		SetBody(ruleUpdate).
-		Put("/rule/{ruleID}")
+		SetBody(rulesetUpdate).
+		Put("/ruleset/{rulesetId}")
 
-	result := (*resp.Result().(*Rule))
+	result := (*resp.Result().(*Ruleset))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateRule(ruleNew RuleCreateRequest, options *RuleListOptions) (rule Rule, statusCode int, Error error) {
+func (c *Client) CreateRuleset(rulesetNew RulesetCreateRequest, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
-		SetResult(&Rule{}).
-		SetBody(ruleNew).
-		Post("/rule")
+		SetResult(&Ruleset{}).
+		SetBody(rulesetNew).
+		Post("/ruleset")
 
-	result := (*resp.Result().(*Rule))
+	result := (*resp.Result().(*Ruleset))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) DeleteRule(ruleID string, options *RuleListOptions) (rule Rule, statusCode int, Error error) {
+func (c *Client) DeleteRuleset(rulesetId string, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -173,16 +162,16 @@ func (c *Client) DeleteRule(ruleID string, options *RuleListOptions) (rule Rule,
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&Rule{}).
+		SetResult(&Ruleset{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
 		SetPathParams(map[string]string{
-			"ruleID": ruleID,
+			"rulesetId": rulesetId,
 		}).
-		Delete("/rule/{ruleID}")
+		Delete("/ruleset/{rulesetId}")
 
-	result := (*resp.Result().(*Rule))
+	result := (*resp.Result().(*Ruleset))
 	return result, resp.StatusCode(), err
 }

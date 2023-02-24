@@ -5,10 +5,10 @@ import (
 )
 
 type Profile struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	RuleId      string `json:"rules"`
-	Version     string `json:"version"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	RulesetId string `json:"ruleset_id"`
+	Version   string `json:"version"`
 }
 
 type ProfilesList []Profile
@@ -45,15 +45,15 @@ func (c *Client) GetProfiles(options *ProfilesListOptions) (profilesList Profile
 
 // ProfileUpdateRequest is a struct for the request object required to update a Profile
 type ProfileUpdateRequest struct {
-	RuleId      string `json:"rules,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Version     string `json:"version,omitempty"`
+	RulesetId string `json:"ruleset_id,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Version   string `json:"version,omitempty"`
 }
 
 type ProfileCreateRequest struct {
-	RuleId      string `json:"rules,omitempty"`
-	Name        string `json:"name"`
-	Version     string `json:"version,omitempty"`
+	RulesetId string `json:"ruleset_id,omitempty"`
+	Name      string `json:"name"`
+	Version   string `json:"version,omitempty"`
 }
 
 type ProfileCreateResponse struct {

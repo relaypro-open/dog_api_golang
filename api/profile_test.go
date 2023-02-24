@@ -10,14 +10,69 @@ import (
 )
 
 func TestProfileIntegration(t *testing.T) {
-	profileCreateResponse := DoTestCreateProfile(t) //C
+	rulesetCreateResponse := DoTestCreateRuleset(t)
+	t.Logf("Id: %v", rulesetCreateResponse.ID)
+	profileCreateResponse := DoTestCreateProfile(t, rulesetCreateResponse.ID) //C
 	t.Logf("Id: %v", profileCreateResponse.ID)
 	DoTestGetProfiles(t)                                               //R
 	DoTestGetProfile(t, profileCreateResponse.ID)                      //R
-	profileUpdated := DoTestUpdateProfile(t, profileCreateResponse.ID) //U
+	profileUpdated := DoTestUpdateProfile(t, profileCreateResponse.ID, rulesetCreateResponse.ID) //U
 	updatedProfile := DoTestGetProfile(t, profileUpdated.ID)           //Updating Profiles create new Profiles
 	assert.Equal(t, "name_update", updatedProfile.Name)
 	DoTestDeleteProfile(t, profileCreateResponse.ID) //D
+	DoTestDeleteRuleset(t, rulesetCreateResponse.ID) //D
+}
+
+func DoTestCreateProfileRuleset(t *testing.T) (rule Ruleset) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	newRule := RulesetCreateRequest{
+		Rules: &Rules{
+			Inbound: []*Rule{
+				&Rule{
+					Action:       "ACCEPT",
+					Active:       true,
+					Comment:      "",
+					Environments: []string{},
+					Group:        "any",
+					GroupType:    "ANY",
+					Interface:    "",
+					Log:          false,
+					LogPrefix:    "",
+					Order:        1,
+					Service:      "any",
+					States:       []string{},
+					Type:         "BASIC",
+				},
+			},
+			Outbound: []*Rule{
+				&Rule{
+					Action:       "DROP",
+					Active:       true,
+					Comment:      "",
+					Environments: []string{},
+					Group:        "any",
+					GroupType:    "ANY",
+					Interface:    "",
+					Log:          false,
+					LogPrefix:    "",
+					Order:        1,
+					Service:      "any",
+					States:       []string{},
+					Type:         "BASIC",
+				},
+			},
+		},
+		Name:    "profile_ruleset",
+	}
+
+	res, statusCode, err := c.CreateRuleset(newRule, nil)
+	assert.Equal(t, 201, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("err: %v", err)
+	t.Logf("res: %+v\n", res)
+	return res
 }
 
 func DoTestGetProfiles(t *testing.T) {
@@ -47,13 +102,13 @@ func DoTestGetProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	return res
 }
 
-func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
+func DoTestUpdateProfile(t *testing.T, ProfileID string, rulesetID string) (Profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ProfileUpdateRequest{
-		RuleId:  "rule_id",
-		Name:    "name_update",
-		Version: "version_update",
+		RulesetId: rulesetID,
+		Name:      "name_update",
+		Version:   "version_update",
 	}
 	res, statusCode, err := c.UpdateProfile(ProfileID, update, nil)
 
@@ -67,13 +122,13 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	return res
 }
 
-func DoTestCreateProfile(t *testing.T) (profile Profile) {
+func DoTestCreateProfile(t *testing.T, rulesetID string) (profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newProfile := ProfileCreateRequest{
-		RuleId:  "rule_id",
-		Name:    "name",
-		Version: "version",
+		RulesetId: rulesetID,
+		Name:      "name",
+		Version:   "version",
 	}
 
 	res, statusCode, err := c.CreateProfile(newProfile, nil)
