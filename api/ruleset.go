@@ -10,35 +10,6 @@ type Ruleset struct {
 	Rules       *Rules `json:"rules"`
 }
 
-type RulesetList []Ruleset
-
-type RulesetUpdateRequest struct {
-	Name        string `json:"name"`
-	Rules       *Rules `json:"rules,omitempty"`
-}
-
-type RulesetCreateRequest struct {
-	Name        string `json:"name"`
-	Rules       *Rules `json:"rules,omitempty"`
-}
-
-type RulesList []Rule
-
-type RulesListOptions struct {
-	Limit int `json:"limit"`
-	Page  int `json:"page"`
-}
-
-type RuleListOptions struct {
-	Limit int `json:"limit"`
-	Page  int `json:"page"`
-}
-
-type RulesetCreateResponse struct {
-	ID     string `json:"id"`
-	Result string `json:"result"`
-}
-
 type Rules struct {
 	Inbound  []*Rule `json:"inbound"`
 	Outbound []*Rule `json:"outbound"`
@@ -60,7 +31,19 @@ type Rule struct {
 	Type         string   `json:"type"`
 }
 
-func (c *Client) GetRulesets(options *RulesListOptions) (rulesetList RulesetList, statusCode int, Error error) {
+type RulesetListOptions struct {
+	Limit int `json:"limit"`
+	Page  int `json:"page"`
+}
+
+type RulesetsList []Ruleset
+
+type RulesetsListOptions struct {
+	Limit int `json:"limit"`
+	Page  int `json:"page"`
+}
+
+func (c *Client) GetRulesets(options *RulesetsListOptions) (rulesetList RulesetsList, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -69,18 +52,28 @@ func (c *Client) GetRulesets(options *RulesListOptions) (rulesetList RulesetList
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&RulesetList{}).
+		SetResult(&RulesetsList{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
 		Get("/rulesets")
 
-	result := (*resp.Result().(*RulesetList))
+	result := (*resp.Result().(*RulesetsList))
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) GetRuleset(rulesetId string, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
+type RulesetUpdateRequest struct {
+	Name        string `json:"name"`
+	Rules       *Rules `json:"rules,omitempty"`
+}
+
+type RulesetCreateRequest struct {
+	Name        string `json:"name"`
+	Rules       *Rules `json:"rules,omitempty"`
+}
+
+func (c *Client) GetRuleset(rulesetId string, options *RulesetListOptions) (ruleset Ruleset, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -104,7 +97,7 @@ func (c *Client) GetRuleset(rulesetId string, options *RuleListOptions) (ruleset
 
 }
 
-func (c *Client) GetRulesetByName(rulesetName string, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
+func (c *Client) GetRulesetByName(rulesetName string, options *RulesetListOptions) (ruleset Ruleset, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -128,7 +121,7 @@ func (c *Client) GetRulesetByName(rulesetName string, options *RuleListOptions) 
 
 }
 
-func (c *Client) UpdateRuleset(rulesetId string, rulesetUpdate RulesetUpdateRequest, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
+func (c *Client) UpdateRuleset(rulesetId string, rulesetUpdate RulesetUpdateRequest, options *RulesetListOptions) (ruleset Ruleset, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
 		SetResult(&Ruleset{}).
@@ -142,7 +135,7 @@ func (c *Client) UpdateRuleset(rulesetId string, rulesetUpdate RulesetUpdateRequ
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) CreateRuleset(rulesetNew RulesetCreateRequest, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
+func (c *Client) CreateRuleset(rulesetNew RulesetCreateRequest, options *RulesetListOptions) (ruleset Ruleset, statusCode int, Error error) {
 
 	resp, err := c.Client.R().
 		SetResult(&Ruleset{}).
@@ -153,7 +146,7 @@ func (c *Client) CreateRuleset(rulesetNew RulesetCreateRequest, options *RuleLis
 	return result, resp.StatusCode(), err
 }
 
-func (c *Client) DeleteRuleset(rulesetId string, options *RuleListOptions) (ruleset Ruleset, statusCode int, Error error) {
+func (c *Client) DeleteRuleset(rulesetId string, options *RulesetListOptions) (ruleset Ruleset, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
