@@ -8,10 +8,11 @@ type Group struct {
 	ID string `json:"id"`
 	Description         string `json:"description"`
 	Name                string `json:"name"`
+	ProfileId           string `json:"profile_id"`
 	ProfileName         string `json:"profile_name"`
 	ProfileVersion      string `json:"profile_version"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars		    map[string]string `json:"vars"`
+	Vars		    	map[string]string `json:"vars"`
 }
 
 type GroupListOptions struct {
@@ -28,19 +29,21 @@ type Ec2SecurityGroupIds struct {
 type GroupUpdateRequest struct {
 	Description         string `json:"description,omitempty"`
 	Name                string `json:"name,omitempty"`
+	ProfileId           string `json:"profile_id,omitempty"`
 	ProfileName         string `json:"profile_name,omitempty"`
 	ProfileVersion      string `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars		    map[string]string `json:"vars"`
+	Vars		        map[string]string `json:"vars"`
 }
 
 type GroupCreateRequest struct {
 	Description         string `json:"description,omitempty"`
 	Name                string `json:"name"`
+	ProfileId           string `json:"profile_id,omitempty"`
 	ProfileName         string `json:"profile_name,omitempty"`
 	ProfileVersion      string `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars		    map[string]string `json:"vars"`
+	Vars		        map[string]string `json:"vars"`
 }
 
 type GroupCreateResponse struct {

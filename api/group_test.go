@@ -53,6 +53,7 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 	update := GroupUpdateRequest{
 		Description:    "description_update",
 		Name:           "name_update",
+		ProfileId:      "profile_id_update",
 		ProfileName:    "profile_name_update",
 		ProfileVersion: "profile_version_update",
 		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
@@ -83,6 +84,7 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 	newGroup := GroupCreateRequest{
 		Description:    "description",
 		Name:           "name",
+		ProfileId:      "profile_id",
 		ProfileName:    "profile_name",
 		ProfileVersion: "profile_version",
 		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
