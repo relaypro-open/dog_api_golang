@@ -10,17 +10,14 @@ import (
 )
 
 func TestProfileIntegration(t *testing.T) {
-	rulesetCreateResponse := DoTestCreateRuleset(t)
-	t.Logf("Id: %v", rulesetCreateResponse.ID)
-	profileCreateResponse := DoTestCreateProfile(t, rulesetCreateResponse.ID) //C
+	profileCreateResponse := DoTestCreateProfile(t) //C
 	t.Logf("Id: %v", profileCreateResponse.ID)
 	DoTestGetProfiles(t)                                               //R
 	DoTestGetProfile(t, profileCreateResponse.ID)                      //R
-	profileUpdated := DoTestUpdateProfile(t, profileCreateResponse.ID, rulesetCreateResponse.ID) //U
+	profileUpdated := DoTestUpdateProfile(t, profileCreateResponse.ID) //U
 	updatedProfile := DoTestGetProfile(t, profileUpdated.ID)           //Updating Profiles create new Profiles
 	assert.Equal(t, "name_update", updatedProfile.Name)
 	DoTestDeleteProfile(t, profileCreateResponse.ID) //D
-	DoTestDeleteRuleset(t, rulesetCreateResponse.ID) //D
 }
 
 func DoTestCreateProfileRuleset(t *testing.T) (rule Ruleset) {
@@ -102,11 +99,10 @@ func DoTestGetProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	return res
 }
 
-func DoTestUpdateProfile(t *testing.T, ProfileID string, rulesetID string) (Profile Profile) {
+func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ProfileUpdateRequest{
-		RulesetId: rulesetID,
 		Name:      "name_update",
 		Version:   "version_update",
 	}
@@ -122,11 +118,10 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string, rulesetID string) (Prof
 	return res
 }
 
-func DoTestCreateProfile(t *testing.T, rulesetID string) (profile Profile) {
+func DoTestCreateProfile(t *testing.T) (profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newProfile := ProfileCreateRequest{
-		RulesetId: rulesetID,
 		Name:      "name",
 		Version:   "version",
 	}

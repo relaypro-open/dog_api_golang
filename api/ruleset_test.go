@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+    "github.com/davecgh/go-spew/spew"
 )
 
 func TestRuleIntegration(t *testing.T) {
@@ -165,6 +166,7 @@ func DoTestCreateRuleset(t *testing.T) (rule Ruleset) {
 		},
 		Name:    "name",
 	}
+	t.Logf("newRule: %s", spew.Sdump(newRule))
 
 	res, statusCode, err := c.CreateRuleset(newRule, nil)
 	assert.Equal(t, 201, statusCode)
