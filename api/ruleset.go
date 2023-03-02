@@ -7,7 +7,7 @@ import (
 type Ruleset struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
-	ProfileId   string `json:"profile_id,omitempty"`
+	ProfileId   *string `json:"profile_id,omitempty"`
 	Rules       *Rules `json:"rules"`
 }
 
@@ -67,13 +67,13 @@ func (c *Client) GetRulesets(options *RulesetsListOptions) (rulesetList Rulesets
 type RulesetUpdateRequest struct {
 	Name        string `json:"name"`
 	Rules       *Rules `json:"rules,omitempty"`
-	ProfileId   string `json:"profile_id,omitempty"`
+	ProfileId   *string `json:"profile_id,omitempty"`
 }
 
 type RulesetCreateRequest struct {
 	Name        string `json:"name"`
 	Rules       *Rules `json:"rules,omitempty"`
-	ProfileId   string `json:"profile_id,omitempty"`
+	ProfileId   *string `json:"profile_id,omitempty"`
 }
 
 func (c *Client) GetRuleset(rulesetId string, options *RulesetListOptions) (ruleset Ruleset, statusCode int, Error error) {

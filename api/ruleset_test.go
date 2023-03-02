@@ -127,6 +127,9 @@ func DoTestUpdateRuleset(t *testing.T, RulesetID string) (ruleset Ruleset) {
 func DoTestCreateRuleset(t *testing.T) (rule Ruleset) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
+	//newString := "123"
+	//newStringPointer := &newString
+
 	newRule := RulesetCreateRequest{
 		Rules: &Rules{
 			Inbound: []*Rule{
@@ -165,6 +168,7 @@ func DoTestCreateRuleset(t *testing.T) (rule Ruleset) {
 			},
 		},
 		Name:    "name",
+		//ProfileId: newStringPointer,
 	}
 	t.Logf("newRule: %s", spew.Sdump(newRule))
 
