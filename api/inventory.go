@@ -21,6 +21,7 @@ type InventoryGroup struct {
 	Name          string   `json:"name"`
 	Vars          map[string]string `json:"vars"`
 	Hosts         map[string]map[string]string `json:"hosts"`
+	Children      []string `json:"children"`
 }
 
 type InventoryListOptions struct {

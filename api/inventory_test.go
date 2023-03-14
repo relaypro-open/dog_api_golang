@@ -79,8 +79,9 @@ func DoTestUpdateInventory(t *testing.T, InventoryID string) (Inventory Inventor
 	    	map[string]string{"db": "sql"},
 	}
 
+	Children1 := []string{"test"}
 
-	Ig1 := &InventoryGroup{"name", Vars1, Hosts1 }
+	Ig1 := &InventoryGroup{"name", Vars1, Hosts1, Children1 }
 
 	update := InventoryUpdateRequest{
 		Name:          "name_update",
@@ -114,7 +115,9 @@ func DoTestCreateInventory(t *testing.T) (inventory Inventory) {
 	    	map[string]string{"db": "sql"},
 	}
 
-	Ig1 := &InventoryGroup{"name", Vars1, Hosts1 }
+	Children1 := []string{"test"}
+
+	Ig1 := &InventoryGroup{"name", Vars1, Hosts1, Children1 }
 
 	newInventory := InventoryCreateRequest{
 		Name:          "name",
