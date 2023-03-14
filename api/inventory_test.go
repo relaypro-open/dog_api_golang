@@ -67,16 +67,16 @@ func DoTestGetInventoryByName(t *testing.T, InventoryName string) (Inventory Inv
 func DoTestUpdateInventory(t *testing.T, InventoryID string) (Inventory Inventory) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	Vars1 := map[string]interface{}{
+	Vars1 := map[string]string{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
         }
 
-	Hosts1 := map[string]interface{}{
+	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
-	    	map[string]interface{}{"os": "Linux"},
+	    	map[string]string{"os": "Linux"},
 	    "db.test.abc":
-	    	map[string]interface{}{"db": "sql"},
+	    	map[string]string{"db": "sql"},
 	}
 
 
@@ -102,18 +102,17 @@ func DoTestUpdateInventory(t *testing.T, InventoryID string) (Inventory Inventor
 func DoTestCreateInventory(t *testing.T) (inventory Inventory) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 	
-	Vars1 := map[string]interface{}{
+	Vars1 := map[string]string{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
         }
 
-	Hosts1 := map[string]interface{}{
+	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
-	    	map[string]interface{}{"os": "Linux"},
+	    	map[string]string{"os": "Linux"},
 	    "db.test.abc":
-	    	map[string]interface{}{"db": "sql"},
+	    	map[string]string{"db": "sql"},
 	}
-
 
 	Ig1 := &InventoryGroup{"name", Vars1, Hosts1 }
 
