@@ -14,11 +14,10 @@ type InventoriesListOptions struct {
 type Inventory struct {
 	ID            string   `json:"id"`
 	Name          string   `json:"name"`
-	Groups        []*InventoryGroup `json:"groups"`
+	Groups        map[string]*InventoryGroup `json:"groups"`
 }
 
 type InventoryGroup struct {
-	Name          string   `json:"name"`
 	Vars          map[string]string `json:"vars"`
 	Hosts         map[string]map[string]string `json:"hosts"`
 	Children      []string `json:"children"`
@@ -32,12 +31,12 @@ type InventoryListOptions struct {
 // InventoryUpdateRequest is a struct for the request object required to update an Inventory
 type InventoryUpdateRequest struct {
 	Name          string   `json:"name"`
-	Groups        []*InventoryGroup `json:"groups"`
+	Groups        map[string]*InventoryGroup `json:"groups"`
 }
 
 type InventoryCreateRequest struct {
 	Name          string   `json:"name"`
-	Groups        []*InventoryGroup `json:"groups"`
+	Groups        map[string]*InventoryGroup `json:"groups"`
 }
 
 type InventoryCreateResponse struct {
