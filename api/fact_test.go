@@ -1,4 +1,4 @@
-//go:build integration || inventory
+//go:build integration || fact
 
 package api
 
@@ -9,22 +9,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInventoryIntegration(t *testing.T) {
-	InventoryCreateResponse := DoTestCreateInventory(t) //C
-	t.Logf("Id: %v", InventoryCreateResponse.ID)
-	DoTestGetInventories(t)                               //R
-	DoTestGetInventory(t, InventoryCreateResponse.ID)         //R
-	DoTestGetInventoryByName(t, InventoryCreateResponse.Name) //R
-	DoTestUpdateInventory(t, InventoryCreateResponse.ID)      //U
-	updatedInventory := DoTestGetInventory(t, InventoryCreateResponse.ID)
-	assert.Equal(t, "name_update", updatedInventory.Name)
-	DoTestDeleteInventory(t, InventoryCreateResponse.ID) //D
+func TestFactIntegration(t *testing.T) {
+	FactCreateResponse := DoTestCreateFact(t) //C
+	t.Logf("Id: %v", FactCreateResponse.ID)
+	DoTestGetFacts(t)                               //R
+	DoTestGetFact(t, FactCreateResponse.ID)         //R
+	DoTestGetFactByName(t, FactCreateResponse.Name) //R
+	DoTestUpdateFact(t, FactCreateResponse.ID)      //U
+	updatedFact := DoTestGetFact(t, FactCreateResponse.ID)
+	assert.Equal(t, "name_update", updatedFact.Name)
+	DoTestDeleteFact(t, FactCreateResponse.ID) //D
 }
 
-func DoTestGetInventories(t *testing.T) {
+func DoTestGetFacts(t *testing.T) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	res, statusCode, err := c.GetInventories(nil)
+	res, statusCode, err := c.GetFacts(nil)
 	assert.Equal(t, 200, statusCode)
 	t.Logf("err: %+v\n", err)
 	assert.Nil(t, err, "expecting nil error")
@@ -34,10 +34,10 @@ func DoTestGetInventories(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-func DoTestGetInventory(t *testing.T, InventoryID string) (Inventory Inventory) {
+func DoTestGetFact(t *testing.T, FactID string) (Fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	res, statusCode, err := c.GetInventory(InventoryID, nil)
+	res, statusCode, err := c.GetFact(FactID, nil)
 
 	assert.Equal(t, 200, statusCode)
 	assert.Nil(t, err, "expecting nil error")
@@ -45,14 +45,14 @@ func DoTestGetInventory(t *testing.T, InventoryID string) (Inventory Inventory) 
 	t.Logf("res: %+v\n", res)
 
 	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
-	assert.Equal(t, res.ID, InventoryID)
+	assert.Equal(t, res.ID, FactID)
 	return res
 }
 
-func DoTestGetInventoryByName(t *testing.T, InventoryName string) (Inventory Inventory) {
+func DoTestGetFactByName(t *testing.T, FactName string) (Fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	res, statusCode, err := c.GetInventoryByName(InventoryName, nil)
+	res, statusCode, err := c.GetFactByName(FactName, nil)
 
 	assert.Equal(t, 200, statusCode)
 	assert.Nil(t, err, "expecting nil error")
@@ -60,11 +60,11 @@ func DoTestGetInventoryByName(t *testing.T, InventoryName string) (Inventory Inv
 	t.Logf("res: %+v\n", res)
 
 	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
-	assert.Equal(t, res.Name, InventoryName)
+	assert.Equal(t, res.Name, FactName)
 	return res
 }
 
-func DoTestUpdateInventory(t *testing.T, InventoryID string) (Inventory Inventory) {
+func DoTestUpdateFact(t *testing.T, FactID string) (Fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	Vars1 := map[string]string{
@@ -81,14 +81,14 @@ func DoTestUpdateInventory(t *testing.T, InventoryID string) (Inventory Inventor
 
 	Children1 := []string{"test"}
 
-	Ig1 := &InventoryGroup{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroup{Vars1, Hosts1, Children1 }
 
-	update := InventoryUpdateRequest{
+	update := FactUpdateRequest{
 		Name:          "name_update",
-		Groups:        map[string]*InventoryGroup{ "mob_dev": Ig1 },
+		Groups:        map[string]*FactGroup{ "mob_dev": Ig1 },
 	}
 
-	res, statusCode, err := c.UpdateInventory(InventoryID, update, nil)
+	res, statusCode, err := c.UpdateFact(FactID, update, nil)
 
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
@@ -100,7 +100,7 @@ func DoTestUpdateInventory(t *testing.T, InventoryID string) (Inventory Inventor
 	return res
 }
 
-func DoTestCreateInventory(t *testing.T) (inventory Inventory) {
+func DoTestCreateFact(t *testing.T) (fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 	
 	Vars1 := map[string]string{
@@ -117,14 +117,14 @@ func DoTestCreateInventory(t *testing.T) (inventory Inventory) {
 
 	Children1 := []string{"test"}
 
-	Ig1 := &InventoryGroup{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroup{Vars1, Hosts1, Children1 }
 
-	newInventory := InventoryCreateRequest{
+	newFact := FactCreateRequest{
 		Name:          "name",
-		Groups:        map[string]*InventoryGroup{ "mob_dev": Ig1 },
+		Groups:        map[string]*FactGroup{ "mob_dev": Ig1 },
 	}
 
-	res, statusCode, err := c.CreateInventory(newInventory, nil)
+	res, statusCode, err := c.CreateFact(newFact, nil)
 	assert.Equal(t, 201, statusCode)
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
@@ -133,10 +133,10 @@ func DoTestCreateInventory(t *testing.T) (inventory Inventory) {
 	return res
 }
 
-func DoTestDeleteInventory(t *testing.T, InventoryID string) {
+func DoTestDeleteFact(t *testing.T, FactID string) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	res, statusCode, err := c.DeleteInventory(InventoryID, nil)
+	res, statusCode, err := c.DeleteFact(FactID, nil)
 	assert.Equal(t, 204, statusCode)
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
