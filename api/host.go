@@ -11,7 +11,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    map[string]string `json:"vars"`
+	Vars	    map[string]any `json:"vars"`
 }
 
 type HostListOptions struct {
@@ -27,7 +27,7 @@ type HostUpdateRequest struct {
 	HostKey     string `json:"hostkey,omitempty"`
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Vars	    map[string]string `json:"vars"`
+	Vars	    map[string]any `json:"vars"`
 }
 
 type HostCreateRequest struct {
@@ -36,7 +36,7 @@ type HostCreateRequest struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    map[string]string `json:"vars"`
+	Vars	    map[string]any `json:"vars"`
 }
 
 type HostCreateResponse struct {
@@ -46,7 +46,7 @@ type HostCreateResponse struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    map[string]string `json:"vars"`
+	Vars	    map[string]any `json:"vars"`
 }
 
 type HostsList []Host

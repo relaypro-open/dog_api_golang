@@ -62,8 +62,10 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: map[string]string {
+		Vars: map[string]any {
 			"test": "group_test",
+			"boolean": true,
+			"integer": 1,
 		},
 	}
 	res, statusCode, err := c.UpdateGroup(GroupID, update, nil)
@@ -93,8 +95,10 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: map[string]string {
+		Vars: map[string]any {
 			"test": "group_test",
+			"boolean": true,
+			"integer": 1,
 		},
 	}
 	res, statusCode, err := c.CreateGroup(newGroup, nil)
