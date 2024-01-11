@@ -18,7 +18,7 @@ type Fact struct {
 }
 
 type FactGroup struct {
-	Vars          map[string]any `json:"vars"`
+	Vars          string   `json:"vars"`
 	Hosts         map[string]map[string]string `json:"hosts"`
 	Children      []string `json:"children"`
 }

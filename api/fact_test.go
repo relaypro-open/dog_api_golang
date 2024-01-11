@@ -67,12 +67,12 @@ func DoTestGetFactByName(t *testing.T, FactName string) (Fact Fact) {
 func DoTestUpdateFact(t *testing.T, FactID string) (Fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	Vars1 := map[string]any{
+	Vars1 := `{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
 	    "boolean": true,
-	    "integer": 1,
-        }
+	    "integer": 1
+        }`
 
 	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
@@ -105,12 +105,12 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact Fact) {
 func DoTestCreateFact(t *testing.T) (fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 	
-	Vars1 := map[string]any{
+	Vars1 := `{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
 	    "boolean": true,
-	    "integer": 1,
-        }
+	    "integer": 1
+        }`
 
 	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
