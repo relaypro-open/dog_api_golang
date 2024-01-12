@@ -2,6 +2,7 @@ package api
 
 import (
 	"strconv"
+	"encoding/json"
 )
 
 type Host struct {
@@ -11,7 +12,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars"`
+	Vars	    json.RawMessage `json:"vars"`
 }
 
 type HostListOptions struct {
@@ -27,7 +28,7 @@ type HostUpdateRequest struct {
 	HostKey     string `json:"hostkey,omitempty"`
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Vars	    string `json:"vars"`
+	Vars	    json.RawMessage `json:"vars"`
 }
 
 type HostCreateRequest struct {
@@ -36,7 +37,7 @@ type HostCreateRequest struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars"`
+	Vars	    json.RawMessage `json:"vars"`
 }
 
 type HostCreateResponse struct {
@@ -46,7 +47,7 @@ type HostCreateResponse struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars"`
+	Vars	    json.RawMessage `json:"vars"`
 }
 
 type HostsList []Host

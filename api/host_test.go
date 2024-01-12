@@ -61,11 +61,11 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: 	 `{
+		Vars: 	 []byte(`{
 			"test": "host_test",
 			"boolean": true,
 			"integer": 1
-		}`,
+		}`),
 	}
 	res, statusCode, err := c.UpdateHost(hostID, updateHost, nil)
 
@@ -87,11 +87,16 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: 	     `jsonencode({
+		//Vars: 	     `jsonencode({
+		//	test = "host_test"
+		//	boolean = true
+		//	integer = 1
+		//})`,
+		Vars: 	     []byte(`{
 			"test": "host_test",
 			"boolean": true,
 			"integer": 1
-		})`,
+		}`),
 	}
 
 	res, statusCode, err := c.CreateHost(newHost, nil)
