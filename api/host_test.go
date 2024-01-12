@@ -5,7 +5,7 @@ package api
 import (
 	"os"
 	"testing"
-
+	b64 "encoding/base64"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,11 +61,16 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: 	 []byte(`{
+		Vars: 	     b64.StdEncoding.EncodeToString([]byte(`{
 			"test": "host_test",
-			"boolean": true,
+			"boolean":  true,
 			"integer": 1
-		}`),
+		}`)),
+		//Vars: 	 []byte(`{
+		//	"test": "host_test",
+		//	"boolean": true,
+		//	"integer": 1
+		//}`),
 	}
 	res, statusCode, err := c.UpdateHost(hostID, updateHost, nil)
 
@@ -87,16 +92,21 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		//Vars: 	     `jsonencode({
+		Vars: 	     b64.StdEncoding.EncodeToString([]byte(`{
+			"test": "host_test",
+			"boolean":  true,
+			"integer": 1
+		}`)),
+		//Vars: 	     `base64encode(jsonencode({
 		//	test = "host_test"
 		//	boolean = true
 		//	integer = 1
-		//})`,
-		Vars: 	     []byte(`{
-			"test": "host_test",
-			"boolean": true,
-			"integer": 1
-		}`),
+		//}))`,
+		//Vars: 	     []byte(`{
+		//	"test": "host_test",
+		//	"boolean": true,
+		//	"integer": 1
+		//}`),
 	}
 
 	res, statusCode, err := c.CreateHost(newHost, nil)
