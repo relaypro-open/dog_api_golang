@@ -87,11 +87,11 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: 	     `{
+		Vars: 	     `jsonencode({
 			"test": "host_test",
 			"boolean": true,
 			"integer": 1
-		}`,
+		})`,
 	}
 
 	res, statusCode, err := c.CreateHost(newHost, nil)

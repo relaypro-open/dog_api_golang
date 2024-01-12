@@ -95,11 +95,11 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: `{
+		Vars: `jsonencode({
 			"test": "group_test",
 			"boolean": true,
 			"integer": 1
-		}`,
+		})`,
 	}
 	res, statusCode, err := c.CreateGroup(newGroup, nil)
 	assert.Equal(t, 201, statusCode)
