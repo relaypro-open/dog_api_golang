@@ -34,7 +34,7 @@ func DoTestGetFacts(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-func DoTestGetFact(t *testing.T, FactID string) (Fact Fact) {
+func DoTestGetFact(t *testing.T, FactID string) (Fact FactJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetFact(FactID, nil)
@@ -49,7 +49,7 @@ func DoTestGetFact(t *testing.T, FactID string) (Fact Fact) {
 	return res
 }
 
-func DoTestGetFactByName(t *testing.T, FactName string) (Fact Fact) {
+func DoTestGetFactByName(t *testing.T, FactName string) (Fact FactJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetFactByName(FactName, nil)
@@ -64,15 +64,15 @@ func DoTestGetFactByName(t *testing.T, FactName string) (Fact Fact) {
 	return res
 }
 
-func DoTestUpdateFact(t *testing.T, FactID string) (Fact Fact) {
+func DoTestUpdateFact(t *testing.T, FactID string) (Fact FactJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	Vars1 := `{
+	Vars1 := map[string]any{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
 	    "boolean": true,
-	    "integer": 1
-        }`
+	    "integer": 1,
+        }
 
 	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
@@ -83,11 +83,11 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact Fact) {
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroup{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroupJson{Vars1, Hosts1, Children1 }
 
-	update := FactUpdateRequest{
+	update := FactJson{
 		Name:          "name_update",
-		Groups:        map[string]*FactGroup{ "mob_dev": Ig1 },
+		Groups:        map[string]*FactGroupJson{ "mob_dev": Ig1 },
 	}
 
 	res, statusCode, err := c.UpdateFact(FactID, update, nil)
@@ -102,15 +102,15 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact Fact) {
 	return res
 }
 
-func DoTestCreateFact(t *testing.T) (fact Fact) {
+func DoTestCreateFact(t *testing.T) (fact FactJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 	
-	Vars1 := `{
+	Vars1 := map[string]any{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
 	    "boolean": true,
-	    "integer": 1
-        }`
+	    "integer": 1,
+        }
 
 	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
@@ -121,11 +121,11 @@ func DoTestCreateFact(t *testing.T) (fact Fact) {
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroup{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroupJson{Vars1, Hosts1, Children1 }
 
-	newFact := FactCreateRequest{
+	newFact := FactJson{
 		Name:          "name",
-		Groups:        map[string]*FactGroup{ "mob_dev": Ig1 },
+		Groups:        map[string]*FactGroupJson{ "mob_dev": Ig1 },
 	}
 
 	res, statusCode, err := c.CreateFact(newFact, nil)
