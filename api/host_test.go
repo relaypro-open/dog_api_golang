@@ -5,15 +5,19 @@ package api
 import (
 	"os"
 	"testing"
-	b64 "encoding/base64"
 	"github.com/stretchr/testify/assert"
 )
 
-//func TestFail(t *testing.T) {
-//	DoTestCreateHostFail(t) //C
-//}
-
 func TestHostIntegration(t *testing.T) {
+	hostEncodeCreateResponse := DoTestCreateHostEncode(t) //C
+	t.Logf("Id: %v", hostEncodeCreateResponse.ID)
+	DoTestGetHostsEncode(t)                          //R
+	DoTestGetHostEncode(t, hostEncodeCreateResponse.ID)    //R
+	DoTestUpdateHostEncode(t, hostEncodeCreateResponse.ID) //U
+	updatedHostEncode := DoTestGetHostEncode(t, hostEncodeCreateResponse.ID)
+	assert.Equal(t, "update_name", updatedHostEncode.Name)
+	DoTestDeleteHost(t, hostEncodeCreateResponse.ID) //D
+	
 	hostCreateResponse := DoTestCreateHost(t) //C
 	t.Logf("Id: %v", hostCreateResponse.ID)
 	DoTestGetHosts(t)                          //R
@@ -36,7 +40,7 @@ func DoTestGetHosts(t *testing.T) {
 	assert.NotEmpty(t, res[0].HostKey, "expecting non-empty hostkey")
 }
 
-func DoTestGetHost(t *testing.T, hostID string) (host Host) {
+func DoTestGetHost(t *testing.T, hostID string) (host HostJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetHost(hostID, nil)
@@ -52,25 +56,20 @@ func DoTestGetHost(t *testing.T, hostID string) (host Host) {
 	return res
 }
 
-func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
+func DoTestUpdateHost(t *testing.T, hostID string) (host HostJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	updateHost := HostUpdateRequest{
+	updateHost := HostJson{
 		Environment: "*",
 		Group:       "update_group",
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: 	     b64.StdEncoding.EncodeToString([]byte(`{
+		Vars: 	     map[string]any{
 			"test": "host_test",
 			"boolean":  true,
-			"integer": 1
-		}`)),
-		//Vars: 	 []byte(`{
-		//	"test": "host_test",
-		//	"boolean": true,
-		//	"integer": 1
-		//}`),
+			"integer": 1,
+		},
 	}
 	res, statusCode, err := c.UpdateHost(hostID, updateHost, nil)
 
@@ -83,30 +82,20 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host Host) {
 	return res
 }
 
-func DoTestCreateHost(t *testing.T) (host Host) {
+func DoTestCreateHost(t *testing.T) (host HostJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	newHost := HostCreateRequest{
+	newHost := HostJson{
 		Environment: "*",
 		Group:       "new_group",
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: 	     b64.StdEncoding.EncodeToString([]byte(`{
+		Vars: 	     map[string]any{
 			"test": "host_test",
 			"boolean":  true,
-			"integer": 1
-		}`)),
-		//Vars: 	     `base64encode(jsonencode({
-		//	test = "host_test"
-		//	boolean = true
-		//	integer = 1
-		//}))`,
-		//Vars: 	     []byte(`{
-		//	"test": "host_test",
-		//	"boolean": true,
-		//	"integer": 1
-		//}`),
+			"integer": 1,
+		},
 	}
 
 	res, statusCode, err := c.CreateHost(newHost, nil)
@@ -119,25 +108,86 @@ func DoTestCreateHost(t *testing.T) (host Host) {
 	return res
 }
 
-//func DoTestCreateHostFail(t *testing.T) (hostCreateResponse HostCreateResponse) {
-//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-//
-//	newHost := HostCreateRequest{
-//		Environment: "*",
-//		Group:       "new_group",
-//		HostKey:     "new_hostkey",
-//		Location:    "*",
-//		Name:        "new_name",
-//	}
-//
-//	res, statusCode, err := c.CreateHost(newHost, nil)
-//	assert.Equal(t, 201, statusCode)
-//	assert.Nil(t, err, "expecting nil error")
-//	assert.NotNil(t, res, "expecting non-nil result")
-//	t.Logf("err: %v", err)
-//	t.Logf("res: %+v\n", res)
-//	return res
-//}
+func DoTestGetHostsEncode(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	res, statusCode, err := c.GetHostsEncode(nil)
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+
+	assert.NotEmpty(t, res[0].HostKey, "expecting non-empty hostkey")
+}
+
+func DoTestGetHostEncode(t *testing.T, hostID string) (host Host) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	res, statusCode, err := c.GetHostEncode(hostID, nil)
+
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+
+	assert.NotEmpty(t, res.HostKey, "expecting non-empty hostkey")
+	assert.Equal(t, res.ID, hostID)
+	t.Logf("res: %+v\n", res)
+	return res
+}
+
+func DoTestUpdateHostEncode(t *testing.T, hostID string) (host Host) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	updateHost := Host{
+		Environment: "*",
+		Group:       "update_group",
+		HostKey:     "update-hostkey",
+		Location:    "*",
+		Name:        "update_name",
+		Vars: 	     `{
+			"test": "host_test",
+			"boolean":  true,
+			"integer": 1
+		}`,
+	}
+	res, statusCode, err := c.UpdateHostEncode(hostID, updateHost, nil)
+
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("err: %v", err)
+	t.Logf("res: %+v\n", res)
+
+	return res
+}
+
+func DoTestCreateHostEncode(t *testing.T) (host Host) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	newHost := Host{
+		Environment: "*",
+		Group:       "new_group",
+		HostKey:     "new_hostkey",
+		Location:    "*",
+		Name:        "new_name",
+		Vars: 	     `{
+			"test": "host_test",
+			"boolean":  true,
+			"integer": 1
+		}`,
+	}
+
+	res, statusCode, err := c.CreateHostEncode(newHost, nil)
+
+	assert.Equal(t, 201, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("err: %v", err)
+	t.Logf("res: %+v\n", res)
+	return res
+}
+
 func DoTestDeleteHost(t *testing.T, hostID string) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
