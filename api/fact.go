@@ -2,7 +2,8 @@ package api
 
 import (
 	"strconv"
-//	"encoding/json"
+	"encoding/json"
+	"errors"
 )
 
 type FactsList []Fact
@@ -15,7 +16,7 @@ type FactsListOptions struct {
 }
 
 type Fact struct {
-	ID            string   `json:"id"`
+	ID            string   `json:"id,omitempty"`
 	Name          string   `json:"name"`
 	Groups        map[string]*FactGroup `json:"groups"`
 }
@@ -59,6 +60,149 @@ type FactCreateResponse struct {
 	Result string `json:"result"`
 }
 
+func encodeFact(factJson FactJson) (fact Fact) {
+	factEncoded := Fact{}
+	encodedGroups := map[string]*FactGroup{}
+	for name, group := range factJson.Groups {
+		responseVars, _ := json.Marshal(group.Vars)
+		varsString := string(responseVars)
+		encodedGroup := FactGroup{}
+		encodedGroup.Vars = varsString
+		encodedGroup.Hosts = group.Hosts
+		encodedGroup.Children = group.Children
+		encodedGroups[name] = &encodedGroup
+	}
+	factEncoded.Groups = encodedGroups
+	factEncoded.Name = factJson.Name
+	factEncoded.ID = factJson.ID
+	return factEncoded
+}
+
+func decodeFact(fact Fact) (factJson FactJson) {
+	newGroups := map[string]*FactGroupJson{}
+	for name, group := range fact.Groups {
+		var vars = map[string]any{}
+		_ = json.Unmarshal([]byte(group.Vars), &vars)
+		newGroup := FactGroupJson{}
+		newGroup.Vars = vars
+		newGroup.Hosts = group.Hosts
+		newGroup.Children = group.Children
+		newGroups[name] = &newGroup
+	}
+	factDecoded := FactJson{}
+	factDecoded.Groups = newGroups
+	factDecoded.Name = fact.Name
+	return factDecoded
+}
+
+func (c *Client) GetFactsEncode(options *FactsListOptions) (factsList FactsList, statusCode int, Error error) {
+	limit := 100
+	page := 1
+	if options != nil {
+		limit = options.Limit
+		page = options.Page
+	}
+
+	resp, err := c.Client.R().
+		SetResult(&FactsListJson{}).
+		SetQueryParams(map[string]string{
+			"page_no": strconv.Itoa(page),
+			"limit":   strconv.Itoa(limit),
+		}).
+		Get("/facts")
+
+	result := (*resp.Result().(*FactsListJson))
+	encodeFacts := FactsList{}
+	for _, factJson := range result {
+		encodeFacts = append(encodeFacts, encodeFact(factJson))
+	}
+	return encodeFacts, resp.StatusCode(), err
+}
+
+func (c *Client) GetFactEncode(FactID string, options *FactListOptions) (fact Fact, statusCode int, Error error) {
+	limit := 100
+	page := 1
+	if options != nil {
+		limit = options.Limit
+		page = options.Page
+	}
+
+	resp, err := c.Client.R().
+		SetResult(&FactJson{}).
+		SetQueryParams(map[string]string{
+			"page_no": strconv.Itoa(page),
+			"limit":   strconv.Itoa(limit),
+		}).
+		SetPathParams(map[string]string{
+			"FactID": FactID,
+		}).
+		Get("/fact/{FactID}")
+
+	result := (*resp.Result().(*FactJson))
+	factEncoded := encodeFact(result)
+	return factEncoded, resp.StatusCode(), err
+
+}
+
+func (c *Client) GetFactByNameEncode(FactName string, options *FactListOptions) (fact Fact, statusCode int, Error error) {
+	limit := 100
+	page := 1
+	if options != nil {
+		limit = options.Limit
+		page = options.Page
+	}
+
+	resp, err := c.Client.R().
+		SetResult(&FactJson{}).
+		SetQueryParams(map[string]string{
+			"page_no": strconv.Itoa(page),
+			"limit":   strconv.Itoa(limit),
+		}).
+		SetPathParams(map[string]string{
+			"FactName": FactName,
+		}).
+		Get("/fact?name={FactName}")
+
+	result := (*resp.Result().(*FactJson))
+	factEncoded := encodeFact(result)
+	return factEncoded, resp.StatusCode(), err
+
+}
+
+func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
+
+	factDecoded := decodeFact(factUpdate)
+	resp, err := c.Client.R().
+		SetResult(&FactJson{}).
+		SetPathParams(map[string]string{
+			"FactID": FactID,
+		}).
+		SetBody(factDecoded).
+		Put("/fact/{FactID}")
+
+	result := (*resp.Result().(*FactJson))
+	factEncoded := encodeFact(result)
+
+	return factEncoded, resp.StatusCode(), err
+}
+
+func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
+
+	factDecoded := decodeFact(factNew)
+	resp, respErr := c.Client.R().
+		SetResult(&FactJson{}).
+		SetBody(factDecoded).
+		Post("/fact")
+
+	result := (*resp.Result().(*FactJson))
+	factEncoded := encodeFact(result)
+	err := errors.Join(respErr)
+
+	return factEncoded, resp.StatusCode(), err
+}
+
+
+
 func (c *Client) GetFacts(options *FactsListOptions) (factsList FactsListJson, statusCode int, Error error) {
 	limit := 100
 	page := 1
@@ -76,19 +220,6 @@ func (c *Client) GetFacts(options *FactsListOptions) (factsList FactsListJson, s
 		Get("/facts")
 
 	result := (*resp.Result().(*FactsListJson))
-	//for _, factJson := range result {
-	//	groups := factJson.Groups
-	//	for groupName, group := range groups {
-	//		PrettyPrint(groupName, group)
-	//		vars := group.Vars
-	//		PrettyPrint("vars", vars)
-	//	}
-	//	//var vars = map[string]any{}
-	//	//unmarshalErr := json.Unmarshal([]byte(groups.Vars), &vars)
-	//	//groups.Vars = groupsJson.Vars
-	//	//var vars = map[string]any{}
-	//	//json.Unmarshal([]byte(groupsJson.Vars), &vars)
-	//}
 	return result, resp.StatusCode(), err
 }
 

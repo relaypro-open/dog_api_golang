@@ -4,7 +4,6 @@ import (
 	"errors"
 	"strconv"
 	"encoding/json"
-	"fmt"
 )
 
 type Host struct {
@@ -76,13 +75,6 @@ type HostsList []HostAll
 type HostsListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
-}
-
-func PrettyPrint(title string, incoming interface{}) {
-	d, _ := json.MarshalIndent(incoming, "", "  ")
-	fmt.Println("=", title)
-	fmt.Println(string(d))
-	fmt.Println("=end", title)
 }
 
 func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
