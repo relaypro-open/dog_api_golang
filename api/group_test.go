@@ -41,7 +41,7 @@ func DoTestGetGroups(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-func DoTestGetGroup(t *testing.T, GroupID string) (Group Group) {
+func DoTestGetGroup(t *testing.T, GroupID string) (group GroupJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	res, statusCode, err := c.GetGroup(GroupID, nil)
@@ -56,10 +56,10 @@ func DoTestGetGroup(t *testing.T, GroupID string) (Group Group) {
 	return res
 }
 
-func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
+func DoTestUpdateGroup(t *testing.T, GroupID string) (group GroupJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	update := GroupUpdateRequest{
+	update := GroupJson{
 		Description:    "description_update",
 		Name:           "name_update",
 		ProfileId:      "profile_id_update",
@@ -71,11 +71,11 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: `{
+		Vars: map[string]any{
 			"test": "group_test",
 			"boolean": true,
-			"integer": 1
-		}`,
+			"integer": 1,
+		},
 	}
 	res, statusCode, err := c.UpdateGroup(GroupID, update, nil)
 
@@ -89,10 +89,10 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (Group Group) {
 	return res
 }
 
-func DoTestCreateGroup(t *testing.T) (group Group) {
+func DoTestCreateGroup(t *testing.T) (group GroupJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	newGroup := GroupCreateRequest{
+	newGroup := GroupJson{
 		Description:    "description",
 		Name:           "name",
 		ProfileId:      "profile_id",
@@ -104,11 +104,11 @@ func DoTestCreateGroup(t *testing.T) (group Group) {
 				SgId: "sg-test",
 			},
 		},
-		Vars: `jsonencode({
+		Vars: map[string]any{
 			"test": "group_test",
 			"boolean": true,
-			"integer": 1
-		})`,
+			"integer": 1,
+		},
 	}
 	res, statusCode, err := c.CreateGroup(newGroup, nil)
 	assert.Equal(t, 201, statusCode)

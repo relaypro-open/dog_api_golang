@@ -13,7 +13,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars"` //raw json for Terraform
+	Vars	    string `json:"vars,omitempty"` //raw json for Terraform
 }
 
 
@@ -62,15 +62,9 @@ type HostCreateResponse struct {
 	Vars	    string `json:"vars"`
 }
 
-type HostAll struct {
-	Group       string `json:"group"`
-	ID          string `json:"id"`
-	HostKey     string `json:"hostkey"`
-	Name        string `json:"name"`
-	Active      string `json:"active"`
-}
+type HostsList []Host
 
-type HostsList []HostAll
+type HostsListJson []HostJson
 
 type HostsListOptions struct {
 	Limit int `json:"limit"`
@@ -102,7 +96,7 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 	return hostJson, unmarshalErr
 }
 
-func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsList, statusCode int, Error error) {
+func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsListJson, statusCode int, Error error) {
 	limit := 100
 	page := 1
 	if options != nil {
@@ -111,14 +105,14 @@ func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsList, statu
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&HostsList{}).
+		SetResult(&HostsListJson{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
 		Get("/hosts")
 
-	result := (*resp.Result().(*HostsList))
+	result := (*resp.Result().(*HostsListJson))
 	return result, resp.StatusCode(), err
 }
 
@@ -131,15 +125,20 @@ func (c *Client) GetHostsEncode(options *HostsListOptions) (hostsList HostsList,
 	}
 
 	resp, err := c.Client.R().
-		SetResult(&HostsList{}).
+		SetResult(&HostsListJson{}).
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
 		}).
 		Get("/hosts")
 
-	result := (*resp.Result().(*HostsList))
-	return result, resp.StatusCode(), err
+	result := (*resp.Result().(*HostsListJson))
+	encodeHosts := HostsList{}
+	for _, hostJson := range result {
+		ec, _ := encodeHost(hostJson)
+		encodeHosts = append(encodeHosts, ec)
+	}
+	return encodeHosts, resp.StatusCode(), err
 }
 
 func (c *Client) GetHost(hostID string, options *HostListOptions) (host HostJson, statusCode int, Error error) {
@@ -215,7 +214,7 @@ func (c *Client) UpdateHostEncode(hostID string, hostUpdate Host, options *HostL
 		}).
 		SetBody(requestHost).
 		Put("/host/{hostID}")
-	
+
 	result := (*resp.Result().(*HostJson))
 	host, responseVarsErr = encodeHost(result)
 
@@ -245,7 +244,6 @@ func (c *Client) CreateHostEncode(hostNew Host, options *HostListOptions) (host 
 
 	result := (*resp.Result().(*HostJson))
 	host, responseVarsErr = encodeHost(result)
-
 	err := errors.Join(respErr,responseVarsErr)
 	return host, resp.StatusCode(), err
 }
