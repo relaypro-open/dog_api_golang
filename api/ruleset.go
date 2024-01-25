@@ -42,26 +42,42 @@ type RulesetsList []Ruleset
 type RulesetsListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
+	Names bool `json:"names"`
 }
 
 func (c *Client) GetRulesets(options *RulesetsListOptions) (rulesetList RulesetsList, statusCode int, Error error) {
 	limit := 100
 	page := 1
+	names := false
 	if options != nil {
 		limit = options.Limit
 		page = options.Page
+		names = options.Names
 	}
 
-	resp, err := c.Client.R().
-		SetResult(&RulesetsList{}).
-		SetQueryParams(map[string]string{
-			"page_no": strconv.Itoa(page),
-			"limit":   strconv.Itoa(limit),
-		}).
-		Get("/rulesets")
+	if names == true {
+			resp, err := c.Client.R().
+			SetResult(&RulesetsList{}).
+			SetQueryParams(map[string]string{
+				"page_no": strconv.Itoa(page),
+				"limit":   strconv.Itoa(limit),
+				"names":   strconv.FormatBool(names),
+			}).
+			Get("/rulesets")
+			result := (*resp.Result().(*RulesetsList))
+			return result, resp.StatusCode(), err
+	} else {
+			resp, err := c.Client.R().
+			SetResult(&RulesetsList{}).
+			SetQueryParams(map[string]string{
+				"page_no": strconv.Itoa(page),
+				"limit":   strconv.Itoa(limit),
+			}).
+			Get("/rulesets")
+			result := (*resp.Result().(*RulesetsList))
+			return result, resp.StatusCode(), err
+	}
 
-	result := (*resp.Result().(*RulesetsList))
-	return result, resp.StatusCode(), err
 }
 
 type RulesetUpdateRequest struct {

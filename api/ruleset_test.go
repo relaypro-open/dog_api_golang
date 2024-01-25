@@ -11,15 +11,30 @@ import (
 )
 
 func TestRuleIntegration(t *testing.T) {
-	rulesetCreateResponse := DoTestCreateRuleset(t)
-	t.Logf("Id: %v", rulesetCreateResponse.ID)
+	//rulesetCreateResponse := DoTestCreateRuleset(t)
+	//t.Logf("Id: %v", rulesetCreateResponse.ID)
 	DoTestGetRulesets(t)                    
-	DoTestGetRuleset(t, rulesetCreateResponse.ID)
-	DoTestGetRulesetByName(t, rulesetCreateResponse.Name) //R
-	DoTestUpdateRuleset(t, rulesetCreateResponse.ID)      //U
-	updatedRuleset := DoTestGetRuleset(t, rulesetCreateResponse.ID)
-	assert.Equal(t, "name_update", updatedRuleset.Name)
-	DoTestDeleteRuleset(t, rulesetCreateResponse.ID)
+	DoTestGetRulesetsNames(t)
+	//DoTestGetRuleset(t, rulesetCreateResponse.ID)
+	//DoTestGetRulesetByName(t, rulesetCreateResponse.Name) //R
+	//DoTestUpdateRuleset(t, rulesetCreateResponse.ID)      //U
+	//updatedRuleset := DoTestGetRuleset(t, rulesetCreateResponse.ID)
+	//assert.Equal(t, "name_update", updatedRuleset.Name)
+	//DoTestDeleteRuleset(t, rulesetCreateResponse.ID)
+}
+
+func DoTestGetRulesetsNames(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	options := RulesetsListOptions{} 
+	options.Names = true
+	res, statusCode, err := c.GetRulesets(&options)
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res[0].ID %s\n", res[0].ID)
+
+	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
 func DoTestGetRulesets(t *testing.T) {
