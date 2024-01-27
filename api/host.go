@@ -93,6 +93,7 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 	hostJson.Location = host.Location
 	hostJson.Name = host.Name
 	hostJson.Vars = map[string]any(vars)
+	hostJson.ID = host.ID
 	return hostJson, unmarshalErr
 }
 

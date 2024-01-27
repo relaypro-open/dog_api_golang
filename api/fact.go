@@ -92,6 +92,7 @@ func decodeFact(fact Fact) (factJson FactJson) {
 	factDecoded := FactJson{}
 	factDecoded.Groups = newGroups
 	factDecoded.Name = fact.Name
+	factDecoded.ID = fact.ID
 	return factDecoded
 }
 
