@@ -22,9 +22,9 @@ type Fact struct {
 }
 
 type FactJson struct {
-	ID           string   `json:"id,omitempty"`
-	Name          string   `json:"name,omitempty"`
-	Groups        map[string]*FactGroupJson `json:"groups,omitempty"`
+	ID           string   `json:"id"`
+	Name          string   `json:"name"`
+	Groups        map[string]*FactGroupJson `json:"groups"`
 }
 
 type FactGroup struct {
@@ -34,9 +34,9 @@ type FactGroup struct {
 }
 
 type FactGroupJson struct {
-	Vars          map[string]any   `json:"vars,omitempty"`
-	Hosts         map[string]map[string]string `json:"hosts,omitempty"`
-	Children      []string `json:"children,omitempty"`
+	Vars          map[string]any   `json:"vars"`
+	Hosts         map[string]map[string]string `json:"hosts"`
+	Children      []string `json:"children"`
 }
 
 type FactListOptions struct {
