@@ -13,7 +13,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars,omitempty"` //raw json for Terraform
+	Vars		string `json:"vars"` //raw json for Terraform
 }
 
 
@@ -24,7 +24,7 @@ type HostJson struct {
 	HostKey     string `json:"hostkey,omitempty"`
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Vars	    map[string]any `json:"vars,omitempty"` //parsed json
+	Vars		map[string]any `json:"vars,omitempty"` //parsed json
 }
 
 type HostListOptions struct {
@@ -34,13 +34,13 @@ type HostListOptions struct {
 
 // HostUpdateRequest is a struct for the request object required to update a Host
 type HostUpdateRequest struct {
-	Environment string `json:"environment"`
-	Group       string `json:"group"`
-	ID          string `json:"id"`
-	HostKey     string `json:"hostkey"`
-	Location    string `json:"location"`
-	Name        string `json:"name"`
-	Vars	    string `json:"vars"`
+	Environment string `json:"environment,omitempty"`
+	Group       string `json:"group,omitempty"`
+	ID          string `json:"id,omitempty"`
+	HostKey     string `json:"hostkey,omitempty"`
+	Location    string `json:"location,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Vars		string `json:"vars,omitempty"`
 }
 
 type HostCreateRequest struct {
@@ -49,7 +49,7 @@ type HostCreateRequest struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars"`
+	Vars		string `json:"vars"`
 }
 
 type HostCreateResponse struct {
@@ -59,7 +59,7 @@ type HostCreateResponse struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars	    string `json:"vars"`
+	Vars		string `json:"vars"`
 }
 
 type HostsList []Host
