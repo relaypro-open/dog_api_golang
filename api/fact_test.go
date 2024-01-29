@@ -144,6 +144,7 @@ func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 
 	res, statusCode, err := c.CreateFactEncode(newFact, nil)
 	assert.Equal(t, 201, statusCode)
+	assert.NotEmpty(t, res.ID, "expected non-empty ID")
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
 	t.Logf("err: %v", err)

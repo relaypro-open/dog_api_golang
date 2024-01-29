@@ -16,13 +16,13 @@ type FactsListOptions struct {
 }
 
 type Fact struct {
-	ID            string   `json:"id,omitempty"`
+	ID            string   `json:"id"`
 	Name          string   `json:"name"`
 	Groups        map[string]*FactGroup `json:"groups"`
 }
 
 type FactJson struct {
-	ID           string   `json:"id"`
+	ID           string   `json:"id,omitempty"`
 	Name          string   `json:"name"`
 	Groups        map[string]*FactGroupJson `json:"groups"`
 }
