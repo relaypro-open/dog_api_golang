@@ -10,6 +10,9 @@ import (
 )
 
 func TestGroupIntegration(t *testing.T) {
+	GroupEncodeCreateNoVarsResponse := DoTestCreateGroupNoVarsEncode(t) //C
+	t.Logf("No Vars Id: %v", GroupEncodeCreateNoVarsResponse.ID)
+	DoTestDeleteGroup(t, GroupEncodeCreateNoVarsResponse.ID) //D
 	GroupEncodeCreateResponse := DoTestCreateGroupEncode(t) //C
 	t.Logf("Id: %v", GroupEncodeCreateResponse.ID)
 	DoTestGetGroupsEncode(t)                           //R
@@ -199,6 +202,31 @@ func DoTestCreateGroupEncode(t *testing.T) (group Group) {
 			"boolean": true,
 			"integer": 1
 		}`,
+	}
+	res, statusCode, err := c.CreateGroupEncode(newGroup, nil)
+	assert.Equal(t, 201, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("err: %v", err)
+	t.Logf("res: %+v\n", res)
+	return res
+}
+
+func DoTestCreateGroupNoVarsEncode(t *testing.T) (group Group) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	newGroup := Group{
+		Description:    "description",
+		Name:           "name",
+		ProfileId:      "profile_id",
+		ProfileName:    "profile_name",
+		ProfileVersion: "profile_version",
+		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+			&Ec2SecurityGroupIds{
+				Region: "us-test-region",
+				SgId: "sg-test",
+			},
+		},
 	}
 	res, statusCode, err := c.CreateGroupEncode(newGroup, nil)
 	assert.Equal(t, 201, statusCode)

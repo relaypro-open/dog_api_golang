@@ -74,8 +74,12 @@ type GroupsListOptions struct {
 }
 
 func encodeGroup(groupJson GroupJson) (group Group, marshalErr error) {
-        responseVars, marshalErr := json.Marshal(groupJson.Vars)
-        varsString := string(responseVars)
+	var responseVars []byte
+        if groupJson.Vars != nil { 
+		responseVars, marshalErr = json.Marshal(groupJson.Vars)
+		varsString := string(responseVars)
+		group.Vars = varsString
+	}
         group.ID = groupJson.ID
         group.Description = groupJson.Description
         group.ProfileId = groupJson.ProfileId
@@ -83,20 +87,21 @@ func encodeGroup(groupJson GroupJson) (group Group, marshalErr error) {
         group.ProfileVersion = groupJson.ProfileVersion
         group.Name = groupJson.Name
         group.Ec2SecurityGroupIds = groupJson.Ec2SecurityGroupIds
-        group.Vars = varsString
         return group, marshalErr
 }
 
 func decodeGroup(group Group) (groupJson GroupJson, unmarshalErr error) {
-        var vars = map[string]any{}
-        unmarshalErr = json.Unmarshal([]byte(group.Vars), &vars)
+	if group.Vars != "" {
+		var vars = map[string]any{}
+		unmarshalErr = json.Unmarshal([]byte(group.Vars), &vars)
+		groupJson.Vars = map[string]any(vars)
+	}
         groupJson.ID = group.ID
         groupJson.Description = group.Description
         groupJson.ProfileId = group.ProfileId
         groupJson.ProfileName = group.ProfileName
         groupJson.Name = group.Name
         groupJson.Ec2SecurityGroupIds = group.Ec2SecurityGroupIds
-        groupJson.Vars = map[string]any(vars)
         return groupJson, unmarshalErr
 }
 

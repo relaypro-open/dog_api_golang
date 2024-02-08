@@ -72,27 +72,32 @@ type HostsListOptions struct {
 }
 
 func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
-	responseVars, marshalErr := json.Marshal(hostJson.Vars)
-	varsString := string(responseVars)
+	var responseVars []byte
+	if hostJson.Vars != nil {
+		responseVars, marshalErr = json.Marshal(hostJson.Vars)
+		varsString := string(responseVars)
+		host.Vars = varsString
+	}
 	host.Environment = hostJson.Environment
 	host.Group = hostJson.Group
 	host.HostKey = hostJson.HostKey
 	host.ID = hostJson.ID
 	host.Location = hostJson.Location
 	host.Name = hostJson.Name
-	host.Vars = varsString
 	return host, marshalErr
 }
 
 func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
-	var vars = map[string]any{}
-	unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
+	if host.Vars != "" {
+		var vars = map[string]any{}
+		unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
+		hostJson.Vars = map[string]any(vars)
+	}
 	hostJson.Environment = host.Environment
 	hostJson.Group = host.Group
 	hostJson.HostKey = host.HostKey
 	hostJson.Location = host.Location
 	hostJson.Name = host.Name
-	hostJson.Vars = map[string]any(vars)
 	hostJson.ID = host.ID
 	return hostJson, unmarshalErr
 }
