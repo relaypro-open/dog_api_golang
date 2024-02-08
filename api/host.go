@@ -69,6 +69,7 @@ type HostsListJson []HostJson
 type HostsListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
+	Active string `json:"active,omitempty"`
 }
 
 func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
@@ -105,9 +106,13 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsListJson, statusCode int, Error error) {
 	limit := 100
 	page := 1
+	var active string
 	if options != nil {
 		limit = options.Limit
 		page = options.Page
+		if options.Active != "" {
+			active = options.Active
+		}
 	}
 
 	resp, err := c.Client.R().
@@ -115,6 +120,7 @@ func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsListJson, s
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
+			"active":  active,
 		}).
 		Get("/hosts")
 

@@ -168,6 +168,19 @@ func DoTestGetHostsEncode(t *testing.T) {
 	assert.NotEmpty(t, res[0].HostKey, "expecting non-empty hostkey")
 }
 
+func DoTestGetHostsEncodeActive(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+	hla := HostsListOptions{}
+	hla.Active = "true"
+	res, statusCode, err := c.GetHostsEncode(&hla)
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res: %+v\n", res)
+
+	assert.NotEmpty(t, res[0].HostKey, "expecting non-empty hostkey")
+}
+
 func DoTestGetHostEncode(t *testing.T, hostID string) (host Host) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
