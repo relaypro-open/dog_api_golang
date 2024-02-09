@@ -14,7 +14,7 @@ type Group struct {
         ProfileName         string `json:"profile_name"`
         ProfileVersion      string `json:"profile_version"`
         Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-        Vars                string `json:"vars"`
+        Vars                string `json:"vars,omitempty"`
 }
 
 type GroupJson struct {

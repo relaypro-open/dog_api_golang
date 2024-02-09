@@ -13,7 +13,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars		string `json:"vars"` //raw json for Terraform
+	Vars		string `json:"vars,omitempty"` //raw json for Terraform
 }
 
 
