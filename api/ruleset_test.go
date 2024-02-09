@@ -11,16 +11,16 @@ import (
 )
 
 func TestRuleIntegration(t *testing.T) {
-	//rulesetCreateResponse := DoTestCreateRuleset(t)
-	//t.Logf("Id: %v", rulesetCreateResponse.ID)
+	rulesetCreateResponse := DoTestCreateRuleset(t)
+	t.Logf("Id: %v", rulesetCreateResponse.ID)
 	DoTestGetRulesets(t)                    
 	DoTestGetRulesetsNames(t)
-	//DoTestGetRuleset(t, rulesetCreateResponse.ID)
-	//DoTestGetRulesetByName(t, rulesetCreateResponse.Name) //R
-	//DoTestUpdateRuleset(t, rulesetCreateResponse.ID)      //U
-	//updatedRuleset := DoTestGetRuleset(t, rulesetCreateResponse.ID)
-	//assert.Equal(t, "name_update", updatedRuleset.Name)
-	//DoTestDeleteRuleset(t, rulesetCreateResponse.ID)
+	DoTestGetRuleset(t, rulesetCreateResponse.ID)
+	DoTestGetRulesetByName(t, rulesetCreateResponse.Name) //R
+	DoTestUpdateRuleset(t, rulesetCreateResponse.ID)      //U
+	updatedRuleset := DoTestGetRuleset(t, rulesetCreateResponse.ID)
+	assert.Equal(t, "name_update", updatedRuleset.Name)
+	DoTestDeleteRuleset(t, rulesetCreateResponse.ID)
 }
 
 func DoTestGetRulesetsNames(t *testing.T) {

@@ -13,7 +13,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars		string `json:"vars,omitempty"` //raw json for Terraform
+	Vars		string `json:"vars"` //raw json for Terraform
 }
 
 
@@ -67,8 +67,8 @@ type HostsList []Host
 type HostsListJson []HostJson
 
 type HostsListOptions struct {
-	Limit int `json:"limit"`
-	Page  int `json:"page"`
+	Limit int `json:"limit,omitempty"`
+	Page  int `json:"page,omitempty"`
 	Active string `json:"active,omitempty"`
 }
 
@@ -106,13 +106,11 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsListJson, statusCode int, Error error) {
 	limit := 100
 	page := 1
-	var active string
+	active := "false"
 	if options != nil {
 		limit = options.Limit
 		page = options.Page
-		if options.Active != "" {
-			active = options.Active
-		}
+		active = options.Active
 	}
 
 	resp, err := c.Client.R().
@@ -131,9 +129,11 @@ func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsListJson, s
 func (c *Client) GetHostsEncode(options *HostsListOptions) (hostsList HostsList, statusCode int, Error error) {
 	limit := 100
 	page := 1
+	active := "false"
 	if options != nil {
 		limit = options.Limit
 		page = options.Page
+		active = options.Active
 	}
 
 	resp, err := c.Client.R().
@@ -141,6 +141,7 @@ func (c *Client) GetHostsEncode(options *HostsListOptions) (hostsList HostsList,
 		SetQueryParams(map[string]string{
 			"page_no": strconv.Itoa(page),
 			"limit":   strconv.Itoa(limit),
+			"active":  active,
 		}).
 		Get("/hosts")
 

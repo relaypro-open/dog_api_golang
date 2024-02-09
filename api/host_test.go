@@ -1,3 +1,4 @@
+
 //go:build integration || host
 
 package api
@@ -170,8 +171,9 @@ func DoTestGetHostsEncode(t *testing.T) {
 
 func DoTestGetHostsEncodeActive(t *testing.T) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-	hla := HostsListOptions{}
-	hla.Active = "true"
+	hla := HostsListOptions{
+		Active: "true",
+	}
 	res, statusCode, err := c.GetHostsEncode(&hla)
 	assert.Equal(t, 200, statusCode)
 	assert.Nil(t, err, "expecting nil error")

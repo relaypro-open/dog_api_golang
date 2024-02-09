@@ -14,7 +14,7 @@ type Group struct {
         ProfileName         string `json:"profile_name"`
         ProfileVersion      string `json:"profile_version"`
         Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-        Vars                string `json:"vars,omitempty"`
+        Vars                string `json:"vars"`
 }
 
 type GroupJson struct {
@@ -75,19 +75,19 @@ type GroupsListOptions struct {
 
 func encodeGroup(groupJson GroupJson) (group Group, marshalErr error) {
 	var responseVars []byte
-        if groupJson.Vars != nil { 
+	if groupJson.Vars != nil { 
 		responseVars, marshalErr = json.Marshal(groupJson.Vars)
 		varsString := string(responseVars)
 		group.Vars = varsString
 	}
-        group.ID = groupJson.ID
-        group.Description = groupJson.Description
-        group.ProfileId = groupJson.ProfileId
-        group.ProfileName = groupJson.ProfileName
-        group.ProfileVersion = groupJson.ProfileVersion
-        group.Name = groupJson.Name
-        group.Ec2SecurityGroupIds = groupJson.Ec2SecurityGroupIds
-        return group, marshalErr
+	group.ID = groupJson.ID
+	group.Description = groupJson.Description
+	group.ProfileId = groupJson.ProfileId
+	group.ProfileName = groupJson.ProfileName
+	group.ProfileVersion = groupJson.ProfileVersion
+	group.Name = groupJson.Name
+	group.Ec2SecurityGroupIds = groupJson.Ec2SecurityGroupIds
+	return group, marshalErr
 }
 
 func decodeGroup(group Group) (groupJson GroupJson, unmarshalErr error) {
@@ -96,13 +96,13 @@ func decodeGroup(group Group) (groupJson GroupJson, unmarshalErr error) {
 		unmarshalErr = json.Unmarshal([]byte(group.Vars), &vars)
 		groupJson.Vars = map[string]any(vars)
 	}
-        groupJson.ID = group.ID
-        groupJson.Description = group.Description
-        groupJson.ProfileId = group.ProfileId
-        groupJson.ProfileName = group.ProfileName
-        groupJson.Name = group.Name
-        groupJson.Ec2SecurityGroupIds = group.Ec2SecurityGroupIds
-        return groupJson, unmarshalErr
+	groupJson.ID = group.ID
+	groupJson.Description = group.Description
+	groupJson.ProfileId = group.ProfileId
+	groupJson.ProfileName = group.ProfileName
+	groupJson.Name = group.Name
+	groupJson.Ec2SecurityGroupIds = group.Ec2SecurityGroupIds
+	return groupJson, unmarshalErr
 }
 
 func (c *Client) GetGroups(options *GroupsListOptions) (groupsList GroupsListJson, statusCode int, Error error) {
