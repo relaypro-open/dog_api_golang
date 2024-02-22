@@ -95,7 +95,10 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroup{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroup{
+		Vars: &Vars1, 
+		Hosts: Hosts1, 
+		Children: Children1 }
 
 	update := Fact{
 		Name:          "name_update",
@@ -117,12 +120,12 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 	
-	Vars1 := `{
-	    "environment": "mob_dev",
-	    "dog_env": "dev",
-	    "boolean": true,
-	    "integer": 1
-        }`
+	//Vars1 := `{
+	//    "environment": "mob_dev",
+	//    "dog_env": "dev",
+	//    "boolean": true,
+	//    "integer": 1
+    //    }`
 
 	Hosts1 := map[string]map[string]string{
 	    "web.test.abc": 
@@ -133,7 +136,9 @@ func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroup{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroup{
+		Hosts: Hosts1, 
+		Children: Children1 }
 	
 
 	newFact := Fact{

@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"encoding/json"
 	"errors"
+	"log"
+	"os"
 )
 
 type FactsList []Fact
@@ -28,13 +30,13 @@ type FactJson struct {
 }
 
 type FactGroup struct {
-	Vars          string   `json:"vars"`
+	Vars          *string   `json:"vars,omitempty"`
 	Hosts         map[string]map[string]string `json:"hosts"`
 	Children      []string `json:"children"`
 }
 
 type FactGroupJson struct {
-	Vars          map[string]any   `json:"vars"`
+	Vars          map[string]any   `json:"vars,omitempty"`
 	Hosts         map[string]map[string]string `json:"hosts"`
 	Children      []string `json:"children"`
 }
@@ -64,13 +66,22 @@ func encodeFact(factJson FactJson) (fact Fact) {
 	factEncoded := Fact{}
 	encodedGroups := map[string]*FactGroup{}
 	for name, group := range factJson.Groups {
-		responseVars, _ := json.Marshal(group.Vars)
-		varsString := string(responseVars)
-		encodedGroup := FactGroup{}
-		encodedGroup.Vars = varsString
-		encodedGroup.Hosts = group.Hosts
-		encodedGroup.Children = group.Children
-		encodedGroups[name] = &encodedGroup
+		if group.Vars == nil {
+			encodedGroup := FactGroup{
+				Hosts: group.Hosts,
+				Children: group.Children,
+			}
+			encodedGroups[name] = &encodedGroup
+		} else {
+			responseVars, _ := json.Marshal(group.Vars)
+			varsString := string(responseVars)
+			encodedGroup := FactGroup{
+				Vars: &varsString,
+				Hosts: group.Hosts,
+				Children: group.Children,
+			}
+			encodedGroups[name] = &encodedGroup
+		}
 	}
 	factEncoded.Groups = encodedGroups
 	factEncoded.Name = factJson.Name
@@ -81,10 +92,12 @@ func encodeFact(factJson FactJson) (fact Fact) {
 func decodeFact(fact Fact) (factJson FactJson) {
 	newGroups := map[string]*FactGroupJson{}
 	for name, group := range fact.Groups {
-		var vars = map[string]any{}
-		_ = json.Unmarshal([]byte(group.Vars), &vars)
 		newGroup := FactGroupJson{}
-		newGroup.Vars = vars
+		if group.Vars != nil {
+			var vars = map[string]any{}
+			_ = json.Unmarshal([]byte(*group.Vars), &vars)
+			newGroup.Vars = vars
+		}
 		newGroup.Hosts = group.Hosts
 		newGroup.Children = group.Children
 		newGroups[name] = &newGroup
@@ -171,6 +184,12 @@ func (c *Client) GetFactByNameEncode(FactName string, options *FactListOptions) 
 }
 
 func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
+	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    log.SetOutput(file)
 
 	factDecoded := decodeFact(factUpdate)
 	resp, err := c.Client.R().
@@ -189,14 +208,18 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 
 func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
 
+	PrettyPrint("factNew", factNew)
 	factDecoded := decodeFact(factNew)
+	PrettyPrint("factDecoded", factDecoded)
 	resp, respErr := c.Client.R().
 		SetResult(&FactJson{}).
 		SetBody(factDecoded).
 		Post("/fact")
 
 	result := (*resp.Result().(*FactJson))
+	PrettyPrint("fact result", result)
 	factEncoded := encodeFact(result)
+	PrettyPrint("factEncoded", factEncoded)
 	err := errors.Join(respErr)
 
 	return factEncoded, resp.StatusCode(), err

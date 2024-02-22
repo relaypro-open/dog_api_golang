@@ -10,6 +10,9 @@ import (
 )
 
 func TestHostIntegration(t *testing.T) {
+	hostEncodeCreateEmptyVarsResponse := DoTestCreateHostEncodeEmptyVars(t) //C
+	t.Logf("Id: %v", hostEncodeCreateEmptyVarsResponse.ID)
+	DoTestDeleteHost(t, hostEncodeCreateEmptyVarsResponse.ID) //D
 	hostEncodeCreateNoVarsResponse := DoTestCreateHostEncodeNoVars(t) //C
 	t.Logf("Id: %v", hostEncodeCreateNoVarsResponse.ID)
 	DoTestDeleteHost(t, hostEncodeCreateNoVarsResponse.ID) //D
@@ -225,7 +228,7 @@ func DoTestUpdateHostEncode(t *testing.T, hostID string) (host Host) {
 	return res
 }
 
-func DoTestUpdateHostEncodeEmptyVars(t *testing.T, hostID string) (host Host) {
+func DoTestUpdateHostEncodeNullStringVars(t *testing.T, hostID string) (host Host) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	updateHost := Host{
@@ -233,7 +236,7 @@ func DoTestUpdateHostEncodeEmptyVars(t *testing.T, hostID string) (host Host) {
 		Group:       "update_group",
 		HostKey:     "update-hostkey",
 		Location:    "*",
-		Name:        "update_name",
+		Name:        "null_string_vars",
 		Vars: 	     "null",
 	}
 	res, statusCode, err := c.UpdateHostEncode(hostID, updateHost, nil)
@@ -283,6 +286,28 @@ func DoTestCreateHostEncodeNoVars(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
+	}
+
+	res, statusCode, err := c.CreateHostEncode(newHost, nil)
+
+	assert.Equal(t, 201, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("err: %v", err)
+	t.Logf("res: %+v\n", res)
+	return res
+}
+
+func DoTestCreateHostEncodeEmptyVars(t *testing.T) (host Host) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	newHost := Host{
+		Environment: "*",
+		Group:       "new_group",
+		HostKey:     "new_hostkey",
+		Location:    "*",
+		Name:        "empty_vars",
+		Vars: 	     "",
 	}
 
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)
