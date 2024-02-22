@@ -1,6 +1,6 @@
 module github.com/relaypro-open/dog_api_golang
 
-go 1.18
+go 1.20
 
 require (
 	github.com/kr/pretty v0.1.0 // indirect
