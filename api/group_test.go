@@ -13,9 +13,9 @@ func TestGroupIntegration(t *testing.T) {
 	GroupEncodeCreateNoVarsResponse := DoTestCreateGroupNoVarsEncode(t) //C
 	t.Logf("No Vars Id: %v", GroupEncodeCreateNoVarsResponse.ID)
 	DoTestDeleteGroup(t, GroupEncodeCreateNoVarsResponse.ID) //D
-	GroupEncodeCreateResponse := DoTestCreateGroupEncode(t) //C
+	GroupEncodeCreateResponse := DoTestCreateGroupEncode(t)  //C
 	t.Logf("Id: %v", GroupEncodeCreateResponse.ID)
-	DoTestGetGroupsEncode(t)                           //R
+	DoTestGetGroupsEncode(t)                                 //R
 	DoTestGetGroupEncode(t, GroupEncodeCreateResponse.ID)    //R
 	DoTestUpdateGroupEncode(t, GroupEncodeCreateResponse.ID) //U
 	updatedGroupEncode := DoTestGetGroupEncode(t, GroupEncodeCreateResponse.ID)
@@ -68,14 +68,14 @@ func DoTestUpdateGroup(t *testing.T, GroupID string) (group GroupJson) {
 		ProfileId:      "profile_id_update",
 		ProfileName:    "profile_name_update",
 		ProfileVersion: "profile_version_update",
-		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+		Ec2SecurityGroupIds: []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
 				Region: "us-test-region",
-				SgId: "sg-test",
+				SgId:   "sg-test",
 			},
 		},
 		Vars: map[string]any{
-			"test": "group_test",
+			"test":    "group_test",
 			"boolean": true,
 			"integer": 1,
 		},
@@ -101,14 +101,14 @@ func DoTestCreateGroup(t *testing.T) (group GroupJson) {
 		ProfileId:      "profile_id",
 		ProfileName:    "profile_name",
 		ProfileVersion: "profile_version",
-		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+		Ec2SecurityGroupIds: []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
 				Region: "us-test-region",
-				SgId: "sg-test",
+				SgId:   "sg-test",
 			},
 		},
 		Vars: map[string]any{
-			"test": "group_test",
+			"test":    "group_test",
 			"boolean": true,
 			"integer": 1,
 		},
@@ -158,10 +158,10 @@ func DoTestUpdateGroupEncode(t *testing.T, GroupID string) (group Group) {
 		ProfileId:      "profile_id_update",
 		ProfileName:    "profile_name_update",
 		ProfileVersion: "profile_version_update",
-		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+		Ec2SecurityGroupIds: []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
 				Region: "us-test-region",
-				SgId: "sg-test",
+				SgId:   "sg-test",
 			},
 		},
 		Vars: `{
@@ -191,10 +191,10 @@ func DoTestCreateGroupEncode(t *testing.T) (group Group) {
 		ProfileId:      "profile_id",
 		ProfileName:    "profile_name",
 		ProfileVersion: "profile_version",
-		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+		Ec2SecurityGroupIds: []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
 				Region: "us-test-region",
-				SgId: "sg-test",
+				SgId:   "sg-test",
 			},
 		},
 		Vars: `{
@@ -221,10 +221,10 @@ func DoTestCreateGroupNoVarsEncode(t *testing.T) (group Group) {
 		ProfileId:      "profile_id",
 		ProfileName:    "profile_name",
 		ProfileVersion: "profile_version",
-		Ec2SecurityGroupIds:  []*Ec2SecurityGroupIds{
+		Ec2SecurityGroupIds: []*Ec2SecurityGroupIds{
 			&Ec2SecurityGroupIds{
 				Region: "us-test-region",
-				SgId: "sg-test",
+				SgId:   "sg-test",
 			},
 		},
 	}

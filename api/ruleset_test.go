@@ -6,14 +6,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/assert"
-    "github.com/davecgh/go-spew/spew"
 )
 
 func TestRuleIntegration(t *testing.T) {
 	rulesetCreateResponse := DoTestCreateRuleset(t)
 	t.Logf("Id: %v", rulesetCreateResponse.ID)
-	DoTestGetRulesets(t)                    
+	DoTestGetRulesets(t)
 	DoTestGetRulesetsNames(t)
 	DoTestGetRuleset(t, rulesetCreateResponse.ID)
 	DoTestGetRulesetByName(t, rulesetCreateResponse.Name) //R
@@ -26,7 +26,7 @@ func TestRuleIntegration(t *testing.T) {
 func DoTestGetRulesetsNames(t *testing.T) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	options := RulesetsListOptions{} 
+	options := RulesetsListOptions{}
 	options.Names = true
 	res, statusCode, err := c.GetRulesets(&options)
 	assert.Equal(t, 200, statusCode)
@@ -82,46 +82,46 @@ func DoTestGetRulesetByName(t *testing.T, RulesetName string) (Ruleset Ruleset) 
 func DoTestUpdateRuleset(t *testing.T, RulesetID string) (ruleset Ruleset) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-    rules := &Rules{
-			Inbound: []*Rule{
-				&Rule{
-					Action:       "ACCEPT",
-					Active:       true,
-					Comment:      "",
-					Environments: []string{},
-					Group:        "any",
-					GroupType:    "ANY",
-					Interface:    "",
-					Log:          false,
-					LogPrefix:    "",
-					Order:        1,
-					Service:      "any",
-					States:       []string{},
-					Type:         "BASIC",
-				},
+	rules := &Rules{
+		Inbound: []*Rule{
+			&Rule{
+				Action:       "ACCEPT",
+				Active:       true,
+				Comment:      "",
+				Environments: []string{},
+				Group:        "any",
+				GroupType:    "ANY",
+				Interface:    "",
+				Log:          false,
+				LogPrefix:    "",
+				Order:        1,
+				Service:      "any",
+				States:       []string{},
+				Type:         "BASIC",
 			},
-			Outbound: []*Rule{
-				&Rule{
-					Action:       "DROP",
-					Active:       true,
-					Comment:      "",
-					Environments: []string{},
-					Group:        "any",
-					GroupType:    "ANY",
-					Interface:    "",
-					Log:          false,
-					LogPrefix:    "",
-					Order:        1,
-					Service:      "any",
-					States:       []string{},
-					Type:         "BASIC",
-				},
+		},
+		Outbound: []*Rule{
+			&Rule{
+				Action:       "DROP",
+				Active:       true,
+				Comment:      "",
+				Environments: []string{},
+				Group:        "any",
+				GroupType:    "ANY",
+				Interface:    "",
+				Log:          false,
+				LogPrefix:    "",
+				Order:        1,
+				Service:      "any",
+				States:       []string{},
+				Type:         "BASIC",
 			},
-		}
+		},
+	}
 
 	update := RulesetUpdateRequest{
-		Rules:   rules,
-		Name:    "name_update",
+		Rules: rules,
+		Name:  "name_update",
 	}
 
 	t.Logf("RulesetID: %+v\n", RulesetID)
@@ -182,7 +182,7 @@ func DoTestCreateRuleset(t *testing.T) (rule Ruleset) {
 				},
 			},
 		},
-		Name:    "name",
+		Name: "name",
 		//ProfileId: newStringPointer,
 	}
 	t.Logf("newRule: %s", spew.Sdump(newRule))

@@ -134,4 +134,3 @@ func DoTestDeleteLink(t *testing.T, LinkID string) {
 
 	assert.Empty(t, res, "expecting empty response")
 }
-

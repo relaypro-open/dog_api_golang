@@ -1,30 +1,29 @@
-
 //go:build integration || host
 
 package api
 
 import (
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestHostIntegration(t *testing.T) {
 	hostEncodeCreateEmptyVarsResponse := DoTestCreateHostEncodeEmptyVars(t) //C
 	t.Logf("Id: %v", hostEncodeCreateEmptyVarsResponse.ID)
-	DoTestDeleteHost(t, hostEncodeCreateEmptyVarsResponse.ID) //D
+	DoTestDeleteHost(t, hostEncodeCreateEmptyVarsResponse.ID)         //D
 	hostEncodeCreateNoVarsResponse := DoTestCreateHostEncodeNoVars(t) //C
 	t.Logf("Id: %v", hostEncodeCreateNoVarsResponse.ID)
 	DoTestDeleteHost(t, hostEncodeCreateNoVarsResponse.ID) //D
-	hostEncodeCreateResponse := DoTestCreateHostEncode(t) //C
+	hostEncodeCreateResponse := DoTestCreateHostEncode(t)  //C
 	t.Logf("Id: %v", hostEncodeCreateResponse.ID)
-	DoTestGetHostsEncode(t)                          //R
+	DoTestGetHostsEncode(t)                                //R
 	DoTestGetHostEncode(t, hostEncodeCreateResponse.ID)    //R
 	DoTestUpdateHostEncode(t, hostEncodeCreateResponse.ID) //U
 	updatedHostEncode := DoTestGetHostEncode(t, hostEncodeCreateResponse.ID)
 	assert.Equal(t, "update_name", updatedHostEncode.Name)
 	DoTestDeleteHost(t, hostEncodeCreateResponse.ID) //D
-	
+
 	hostCreateResponse := DoTestCreateHost(t) //C
 	t.Logf("Id: %v", hostCreateResponse.ID)
 	DoTestGetHosts(t)                          //R
@@ -72,9 +71,9 @@ func DoTestUpdateHost(t *testing.T, hostID string) (host HostJson) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: 	     map[string]any{
-			"test": "host_test",
-			"boolean":  true,
+		Vars: map[string]any{
+			"test":    "host_test",
+			"boolean": true,
 			"integer": 1,
 		},
 	}
@@ -97,9 +96,9 @@ func DoTestUpdateHostNoLocation(t *testing.T, hostID string) (host HostJson) {
 		Group:       "update_group",
 		HostKey:     "update-hostkey",
 		Name:        "update_name",
-		Vars: 	     map[string]any{
-			"test": "host_test",
-			"boolean":  true,
+		Vars: map[string]any{
+			"test":    "host_test",
+			"boolean": true,
 			"integer": 1,
 		},
 	}
@@ -143,9 +142,9 @@ func DoTestCreateHost(t *testing.T) (host HostJson) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: 	     map[string]any{
-			"test": "host_test",
-			"boolean":  true,
+		Vars: map[string]any{
+			"test":    "host_test",
+			"boolean": true,
 			"integer": 1,
 		},
 	}
@@ -211,7 +210,7 @@ func DoTestUpdateHostEncode(t *testing.T, hostID string) (host Host) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: 	     `{
+		Vars: `{
 			"test": "host_test",
 			"boolean":  true,
 			"integer": 1
@@ -237,7 +236,7 @@ func DoTestUpdateHostEncodeNullStringVars(t *testing.T, hostID string) (host Hos
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "null_string_vars",
-		Vars: 	     "null",
+		Vars:        "null",
 	}
 	res, statusCode, err := c.UpdateHostEncode(hostID, updateHost, nil)
 
@@ -260,7 +259,7 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: 	     `{
+		Vars: `{
 			"test": "host_test",
 			"boolean":  true,
 			"integer": 1
@@ -307,7 +306,7 @@ func DoTestCreateHostEncodeEmptyVars(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "empty_vars",
-		Vars: 	     "",
+		Vars:        "",
 	}
 
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)

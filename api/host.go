@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"strconv"
-	"encoding/json"
 )
 
 type Host struct {
@@ -13,18 +13,17 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars		string `json:"vars"` //raw json for Terraform
+	Vars        string `json:"vars"` //raw json for Terraform
 }
 
-
 type HostJson struct {
-	Environment string `json:"environment,omitempty"`
-	Group       string `json:"group,omitempty"`
-	ID          string `json:"id,omitempty"`
-	HostKey     string `json:"hostkey,omitempty"`
-	Location    string `json:"location,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Vars		map[string]any `json:"vars,omitempty"` //parsed json
+	Environment string         `json:"environment,omitempty"`
+	Group       string         `json:"group,omitempty"`
+	ID          string         `json:"id,omitempty"`
+	HostKey     string         `json:"hostkey,omitempty"`
+	Location    string         `json:"location,omitempty"`
+	Name        string         `json:"name,omitempty"`
+	Vars        map[string]any `json:"vars,omitempty"` //parsed json
 }
 
 type HostListOptions struct {
@@ -40,7 +39,7 @@ type HostUpdateRequest struct {
 	HostKey     string `json:"hostkey,omitempty"`
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Vars		string `json:"vars,omitempty"`
+	Vars        string `json:"vars,omitempty"`
 }
 
 type HostCreateRequest struct {
@@ -49,7 +48,7 @@ type HostCreateRequest struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars		string `json:"vars"`
+	Vars        string `json:"vars"`
 }
 
 type HostCreateResponse struct {
@@ -59,7 +58,7 @@ type HostCreateResponse struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars		string `json:"vars"`
+	Vars        string `json:"vars"`
 }
 
 type HostsList []Host
@@ -67,8 +66,8 @@ type HostsList []Host
 type HostsListJson []HostJson
 
 type HostsListOptions struct {
-	Limit int `json:"limit,omitempty"`
-	Page  int `json:"page,omitempty"`
+	Limit  int    `json:"limit,omitempty"`
+	Page   int    `json:"page,omitempty"`
 	Active string `json:"active,omitempty"`
 }
 
@@ -199,7 +198,7 @@ func (c *Client) GetHostEncode(hostID string, options *HostListOptions) (host Ho
 
 	result := (*resp.Result().(*HostJson))
 	host, responseVarsErr := encodeHost(result)
-	err := errors.Join(respErr,responseVarsErr)
+	err := errors.Join(respErr, responseVarsErr)
 	return host, resp.StatusCode(), err
 }
 
@@ -231,7 +230,7 @@ func (c *Client) UpdateHostEncode(hostID string, hostUpdate Host, options *HostL
 	result := (*resp.Result().(*HostJson))
 	host, responseVarsErr = encodeHost(result)
 
-	err := errors.Join(respErr,responseVarsErr)
+	err := errors.Join(respErr, responseVarsErr)
 	return host, resp.StatusCode(), err
 }
 
@@ -257,7 +256,7 @@ func (c *Client) CreateHostEncode(hostNew Host, options *HostListOptions) (host 
 
 	result := (*resp.Result().(*HostJson))
 	host, responseVarsErr = encodeHost(result)
-	err := errors.Join(respErr,responseVarsErr)
+	err := errors.Join(respErr, responseVarsErr)
 	return host, resp.StatusCode(), err
 }
 

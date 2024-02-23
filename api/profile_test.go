@@ -60,7 +60,7 @@ func DoTestCreateProfileRuleset(t *testing.T) (rule Ruleset) {
 				},
 			},
 		},
-		Name:    "profile_ruleset",
+		Name: "profile_ruleset",
 	}
 
 	res, statusCode, err := c.CreateRuleset(newRule, nil)
@@ -103,8 +103,8 @@ func DoTestUpdateProfile(t *testing.T, ProfileID string) (Profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	update := ProfileUpdateRequest{
-		Name:      "name_update",
-		Version:   "version_update",
+		Name:    "name_update",
+		Version: "version_update",
 	}
 	res, statusCode, err := c.UpdateProfile(ProfileID, update, nil)
 
@@ -122,8 +122,8 @@ func DoTestCreateProfile(t *testing.T) (profile Profile) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	newProfile := ProfileCreateRequest{
-		Name:      "name",
-		Version:   "version",
+		Name:    "name",
+		Version: "version",
 	}
 
 	res, statusCode, err := c.CreateProfile(newProfile, nil)

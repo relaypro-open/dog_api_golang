@@ -1,9 +1,8 @@
 package api
-	
 
 import (
+	_ "embed"
 	"github.com/go-resty/resty/v2"
-    _ "embed"
 )
 
 //go:generate sh -c "printf %s $(git rev-parse HEAD) > VERSION.txt"

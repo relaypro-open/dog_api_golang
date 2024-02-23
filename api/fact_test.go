@@ -22,7 +22,7 @@ func TestFactIntegration(t *testing.T) {
 
 	FactCreateResponseEncode := DoTestCreateFactEncode(t) //C
 	t.Logf("Id: %v", FactCreateResponseEncode.ID)
-	DoTestGetFactsEncode(t)                               //R
+	DoTestGetFactsEncode(t)                                     //R
 	DoTestGetFactEncode(t, FactCreateResponseEncode.ID)         //R
 	DoTestGetFactByNameEncode(t, FactCreateResponseEncode.Name) //R
 	DoTestUpdateFactEncode(t, FactCreateResponseEncode.ID)      //U
@@ -87,22 +87,20 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
         }`
 
 	Hosts1 := map[string]map[string]string{
-	    "web.test.abc": 
-	    	map[string]string{"os": "Linux"},
-	    "db.test.abc":
-	    	map[string]string{"db": "sql"},
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
 
 	Ig1 := &FactGroup{
-		Vars: &Vars1, 
-		Hosts: Hosts1, 
-		Children: Children1 }
+		Vars:     &Vars1,
+		Hosts:    Hosts1,
+		Children: Children1}
 
 	update := Fact{
-		Name:          "name_update",
-		Groups:        map[string]*FactGroup{ "mob_dev": Ig1 },
+		Name:   "name_update",
+		Groups: map[string]*FactGroup{"mob_dev": Ig1},
 	}
 
 	res, statusCode, err := c.UpdateFactEncode(FactID, update, nil)
@@ -119,33 +117,29 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 
 func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-	
+
 	//Vars1 := `{
 	//    "environment": "mob_dev",
 	//    "dog_env": "dev",
 	//    "boolean": true,
 	//    "integer": 1
-    //    }`
+	//    }`
 
 	Hosts1 := map[string]map[string]string{
-	    "web.test.abc": 
-	    	map[string]string{"os": "Linux"},
-	    "db.test.abc":
-	    	map[string]string{"db": "sql"},
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
 
 	Ig1 := &FactGroup{
-		Hosts: Hosts1, 
-		Children: Children1 }
-	
+		Hosts:    Hosts1,
+		Children: Children1}
 
 	newFact := Fact{
-		Name:          "name",
-		Groups:        map[string]*FactGroup{ "mob_dev": Ig1 },
+		Name:   "name",
+		Groups: map[string]*FactGroup{"mob_dev": Ig1},
 	}
-
 
 	res, statusCode, err := c.CreateFactEncode(newFact, nil)
 	assert.Equal(t, 201, statusCode)
@@ -206,26 +200,24 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact FactJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
 	Vars1 := map[string]any{
-	    "environment": "mob_dev",
-	    "dog_env": "dev",
-	    "boolean": true,
-	    "integer": 1,
-        }
+		"environment": "mob_dev",
+		"dog_env":     "dev",
+		"boolean":     true,
+		"integer":     1,
+	}
 
 	Hosts1 := map[string]map[string]string{
-	    "web.test.abc": 
-	    	map[string]string{"os": "Linux"},
-	    "db.test.abc":
-	    	map[string]string{"db": "sql"},
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroupJson{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroupJson{Vars1, Hosts1, Children1}
 
 	update := FactJson{
-		Name:          "name_update",
-		Groups:        map[string]*FactGroupJson{ "mob_dev": Ig1 },
+		Name:   "name_update",
+		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
 	}
 
 	res, statusCode, err := c.UpdateFact(FactID, update, nil)
@@ -242,28 +234,26 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact FactJson) {
 
 func DoTestCreateFact(t *testing.T) (fact FactJson) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-	
+
 	Vars1 := map[string]any{
-	    "environment": "mob_dev",
-	    "dog_env": "dev",
-	    "boolean": true,
-	    "integer": 1,
-        }
+		"environment": "mob_dev",
+		"dog_env":     "dev",
+		"boolean":     true,
+		"integer":     1,
+	}
 
 	Hosts1 := map[string]map[string]string{
-	    "web.test.abc": 
-	    	map[string]string{"os": "Linux"},
-	    "db.test.abc":
-	    	map[string]string{"db": "sql"},
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroupJson{Vars1, Hosts1, Children1 }
+	Ig1 := &FactGroupJson{Vars1, Hosts1, Children1}
 
 	newFact := FactJson{
-		Name:          "name",
-		Groups:        map[string]*FactGroupJson{ "mob_dev": Ig1 },
+		Name:   "name",
+		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
 	}
 
 	res, statusCode, err := c.CreateFact(newFact, nil)

@@ -1,11 +1,11 @@
 package api
 
 import (
-	"strconv"
 	"encoding/json"
 	"errors"
 	"log"
 	"os"
+	"strconv"
 )
 
 type FactsList []Fact
@@ -18,27 +18,27 @@ type FactsListOptions struct {
 }
 
 type Fact struct {
-	ID            string   `json:"id"`
-	Name          string   `json:"name"`
-	Groups        map[string]*FactGroup `json:"groups"`
+	ID     string                `json:"id"`
+	Name   string                `json:"name"`
+	Groups map[string]*FactGroup `json:"groups"`
 }
 
 type FactJson struct {
-	ID           string   `json:"id,omitempty"`
-	Name          string   `json:"name"`
-	Groups        map[string]*FactGroupJson `json:"groups"`
+	ID     string                    `json:"id,omitempty"`
+	Name   string                    `json:"name"`
+	Groups map[string]*FactGroupJson `json:"groups"`
 }
 
 type FactGroup struct {
-	Vars          *string   `json:"vars,omitempty"`
-	Hosts         map[string]map[string]string `json:"hosts"`
-	Children      []string `json:"children"`
+	Vars     *string                      `json:"vars,omitempty"`
+	Hosts    map[string]map[string]string `json:"hosts"`
+	Children []string                     `json:"children"`
 }
 
 type FactGroupJson struct {
-	Vars          map[string]any   `json:"vars,omitempty"`
-	Hosts         map[string]map[string]string `json:"hosts"`
-	Children      []string `json:"children"`
+	Vars     map[string]any               `json:"vars,omitempty"`
+	Hosts    map[string]map[string]string `json:"hosts"`
+	Children []string                     `json:"children"`
 }
 
 type FactListOptions struct {
@@ -48,13 +48,13 @@ type FactListOptions struct {
 
 // FactUpdateRequest is a struct for the request object required to update an Fact
 type FactUpdateRequest struct {
-	Name          string   `json:"name"`
-	Groups        map[string]*FactGroup `json:"groups"`
+	Name   string                `json:"name"`
+	Groups map[string]*FactGroup `json:"groups"`
 }
 
 type FactCreateRequest struct {
-	Name          string   `json:"name"`
-	Groups        map[string]*FactGroup `json:"groups"`
+	Name   string                `json:"name"`
+	Groups map[string]*FactGroup `json:"groups"`
 }
 
 type FactCreateResponse struct {
@@ -68,7 +68,7 @@ func encodeFact(factJson FactJson) (fact Fact) {
 	for name, group := range factJson.Groups {
 		if group.Vars == nil {
 			encodedGroup := FactGroup{
-				Hosts: group.Hosts,
+				Hosts:    group.Hosts,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
@@ -76,8 +76,8 @@ func encodeFact(factJson FactJson) (fact Fact) {
 			responseVars, _ := json.Marshal(group.Vars)
 			varsString := string(responseVars)
 			encodedGroup := FactGroup{
-				Vars: &varsString,
-				Hosts: group.Hosts,
+				Vars:     &varsString,
+				Hosts:    group.Hosts,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
@@ -185,11 +185,11 @@ func (c *Client) GetFactByNameEncode(FactName string, options *FactListOptions) 
 
 func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
 	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-    if err != nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    log.SetOutput(file)
+	log.SetOutput(file)
 
 	factDecoded := decodeFact(factUpdate)
 	resp, err := c.Client.R().
@@ -224,8 +224,6 @@ func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact 
 
 	return factEncoded, resp.StatusCode(), err
 }
-
-
 
 func (c *Client) GetFacts(options *FactsListOptions) (factsList FactsListJson, statusCode int, Error error) {
 	limit := 100
