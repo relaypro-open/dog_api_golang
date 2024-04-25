@@ -208,18 +208,18 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 
 func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
 
-	PrettyPrint("factNew", factNew)
+	//PrettyPrint("factNew", factNew)
 	factDecoded := decodeFact(factNew)
-	PrettyPrint("factDecoded", factDecoded)
+	//PrettyPrint("factDecoded", factDecoded)
 	resp, respErr := c.Client.R().
 		SetResult(&FactJson{}).
 		SetBody(factDecoded).
 		Post("/fact")
 
 	result := (*resp.Result().(*FactJson))
-	PrettyPrint("fact result", result)
+	//PrettyPrint("fact result", result)
 	factEncoded := encodeFact(result)
-	PrettyPrint("factEncoded", factEncoded)
+	//PrettyPrint("factEncoded", factEncoded)
 	err := errors.Join(respErr)
 
 	return factEncoded, resp.StatusCode(), err
