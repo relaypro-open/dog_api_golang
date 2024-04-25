@@ -14,7 +14,7 @@ type Group struct {
 	ProfileName         string                 `json:"profile_name"`
 	ProfileVersion      string                 `json:"profile_version"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars                string                 `json:"vars"`
+	Vars                *string                `json:"vars,omitempty"`
 }
 
 type GroupJson struct {
@@ -78,7 +78,7 @@ func encodeGroup(groupJson GroupJson) (group Group, marshalErr error) {
 	if groupJson.Vars != nil {
 		responseVars, marshalErr = json.Marshal(groupJson.Vars)
 		varsString := string(responseVars)
-		group.Vars = varsString
+		group.Vars = &varsString
 	}
 	group.ID = groupJson.ID
 	group.Description = groupJson.Description
@@ -91,9 +91,9 @@ func encodeGroup(groupJson GroupJson) (group Group, marshalErr error) {
 }
 
 func decodeGroup(group Group) (groupJson GroupJson, unmarshalErr error) {
-	if group.Vars != "" {
+	if group.Vars != nil {
 		var vars = map[string]any{}
-		unmarshalErr = json.Unmarshal([]byte(group.Vars), &vars)
+		unmarshalErr = json.Unmarshal([]byte(*group.Vars), &vars)
 		groupJson.Vars = map[string]any(vars)
 	}
 	groupJson.ID = group.ID

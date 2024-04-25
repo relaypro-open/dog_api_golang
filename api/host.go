@@ -13,7 +13,7 @@ type Host struct {
 	HostKey     string `json:"hostkey"`
 	Location    string `json:"location"`
 	Name        string `json:"name"`
-	Vars        string `json:"vars"` //raw json for Terraform
+	Vars        *string `json:"vars,omitempty"` //raw json for Terraform
 }
 
 type HostJson struct {
@@ -74,9 +74,10 @@ type HostsListOptions struct {
 func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
 	var responseVars []byte
 	if hostJson.Vars != nil {
+	} else {
 		responseVars, marshalErr = json.Marshal(hostJson.Vars)
 		varsString := string(responseVars)
-		host.Vars = varsString
+		host.Vars = &varsString
 	}
 	host.Environment = hostJson.Environment
 	host.Group = hostJson.Group
@@ -88,9 +89,9 @@ func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
 }
 
 func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
-	if host.Vars != "" {
+	if host.Vars != nil {
 		var vars = map[string]any{}
-		unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
+		unmarshalErr = json.Unmarshal([]byte(*host.Vars), &vars)
 		hostJson.Vars = map[string]any(vars)
 	}
 	hostJson.Environment = host.Environment

@@ -151,6 +151,11 @@ func DoTestGetGroupEncode(t *testing.T, GroupID string) (Group Group) {
 
 func DoTestUpdateGroupEncode(t *testing.T, GroupID string) (group Group) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+	Vars1 := `{
+		"test": "group_test",
+		"boolean": true,
+		"integer": 1
+	}`
 
 	update := Group{
 		Description:    "description_update",
@@ -164,11 +169,7 @@ func DoTestUpdateGroupEncode(t *testing.T, GroupID string) (group Group) {
 				SgId:   "sg-test",
 			},
 		},
-		Vars: `{
-			"test": "group_test",
-			"boolean": true,
-			"integer": 1
-		}`,
+		Vars:            &Vars1,
 	}
 	res, statusCode, err := c.UpdateGroupEncode(GroupID, update, nil)
 
@@ -184,6 +185,11 @@ func DoTestUpdateGroupEncode(t *testing.T, GroupID string) (group Group) {
 
 func DoTestCreateGroupEncode(t *testing.T) (group Group) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+	Vars1 := `{
+		"test": "group_test",
+		"boolean": true,
+		"integer": 1
+	}`
 
 	newGroup := Group{
 		Description:    "description",
@@ -197,11 +203,7 @@ func DoTestCreateGroupEncode(t *testing.T) (group Group) {
 				SgId:   "sg-test",
 			},
 		},
-		Vars: `{
-			"test": "group_test",
-			"boolean": true,
-			"integer": 1
-		}`,
+		Vars:           &Vars1,
 	}
 	res, statusCode, err := c.CreateGroupEncode(newGroup, nil)
 	assert.Equal(t, 201, statusCode)
