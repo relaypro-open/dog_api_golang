@@ -32,24 +32,24 @@ type HostListOptions struct {
 }
 
 // HostUpdateRequest is a struct for the request object required to update a Host
-//type HostUpdateRequest struct {
-//	Environment string `json:"environment,omitempty"`
-//	Group       string `json:"group,omitempty"`
-//	ID          string `json:"id,omitempty"`
-//	HostKey     string `json:"hostkey,omitempty"`
-//	Location    string `json:"location,omitempty"`
-//	Name        string `json:"name,omitempty"`
-//	Vars        *string `json:"vars,omitempty"`
-//}
+type HostUpdateRequest struct {
+	Environment string `json:"environment,omitempty"`
+	Group       string `json:"group,omitempty"`
+	ID          string `json:"id,omitempty"`
+	HostKey     string `json:"hostkey,omitempty"`
+	Location    string `json:"location,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Vars        *string `json:"vars,omitempty"`
+}
 
-//type HostCreateRequest struct {
-//	Environment string `json:"environment"`
-//	Group       string `json:"group"`
-//	HostKey     string `json:"hostkey"`
-//	Location    string `json:"location"`
-//	Name        string `json:"name"`
-//	Vars        *string `json:"vars"`
-//}
+type HostCreateRequest struct {
+	Environment string `json:"environment"`
+	Group       string `json:"group"`
+	HostKey     string `json:"hostkey"`
+	Location    string `json:"location"`
+	Name        string `json:"name"`
+	Vars        *string `json:"vars"`
+}
 
 //type HostCreateResponse struct {
 //	Environment string `json:"environment"`
