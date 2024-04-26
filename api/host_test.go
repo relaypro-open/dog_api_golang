@@ -268,6 +268,7 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 		Vars:        &Vars1,
 	}
 
+	t.Logf("newHost: %+v", newHost)
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)
 
 	assert.Equal(t, 201, statusCode)

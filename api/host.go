@@ -32,34 +32,34 @@ type HostListOptions struct {
 }
 
 // HostUpdateRequest is a struct for the request object required to update a Host
-type HostUpdateRequest struct {
-	Environment string `json:"environment,omitempty"`
-	Group       string `json:"group,omitempty"`
-	ID          string `json:"id,omitempty"`
-	HostKey     string `json:"hostkey,omitempty"`
-	Location    string `json:"location,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Vars        *string `json:"vars,omitempty"`
-}
+//type HostUpdateRequest struct {
+//	Environment string `json:"environment,omitempty"`
+//	Group       string `json:"group,omitempty"`
+//	ID          string `json:"id,omitempty"`
+//	HostKey     string `json:"hostkey,omitempty"`
+//	Location    string `json:"location,omitempty"`
+//	Name        string `json:"name,omitempty"`
+//	Vars        *string `json:"vars,omitempty"`
+//}
 
-type HostCreateRequest struct {
-	Environment string `json:"environment"`
-	Group       string `json:"group"`
-	HostKey     string `json:"hostkey"`
-	Location    string `json:"location"`
-	Name        string `json:"name"`
-	Vars        *string `json:"vars"`
-}
+//type HostCreateRequest struct {
+//	Environment string `json:"environment"`
+//	Group       string `json:"group"`
+//	HostKey     string `json:"hostkey"`
+//	Location    string `json:"location"`
+//	Name        string `json:"name"`
+//	Vars        *string `json:"vars"`
+//}
 
-type HostCreateResponse struct {
-	Environment string `json:"environment"`
-	Group       string `json:"group"`
-	ID          string `json:"id"`
-	HostKey     string `json:"hostkey"`
-	Location    string `json:"location"`
-	Name        string `json:"name"`
-	Vars        *string `json:"vars"`
-}
+//type HostCreateResponse struct {
+//	Environment string `json:"environment"`
+//	Group       string `json:"group"`
+//	ID          string `json:"id"`
+//	HostKey     string `json:"hostkey"`
+//	Location    string `json:"location"`
+//	Name        string `json:"name"`
+//	Vars        *string `json:"vars"`
+//}
 
 type HostsList []Host
 
@@ -73,34 +73,49 @@ type HostsListOptions struct {
 
 func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
 	var responseVars []byte
-	if hostJson.Vars != nil {
+	if hostJson.Vars == nil {
+		host.Environment = hostJson.Environment
+		host.Group = hostJson.Group
+		host.HostKey = hostJson.HostKey
+		host.ID = hostJson.ID
+		host.Location = hostJson.Location
+		host.Name = hostJson.Name
+		return host, marshalErr
 	} else {
 		responseVars, marshalErr = json.Marshal(hostJson.Vars)
 		varsString := string(responseVars)
 		host.Vars = &varsString
+		host.Environment = hostJson.Environment
+		host.Group = hostJson.Group
+		host.HostKey = hostJson.HostKey
+		host.ID = hostJson.ID
+		host.Location = hostJson.Location
+		host.Name = hostJson.Name
+		return host, marshalErr
 	}
-	host.Environment = hostJson.Environment
-	host.Group = hostJson.Group
-	host.HostKey = hostJson.HostKey
-	host.ID = hostJson.ID
-	host.Location = hostJson.Location
-	host.Name = hostJson.Name
-	return host, marshalErr
 }
 
 func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
-	if host.Vars != nil {
+	if host.Vars == nil {
+		hostJson.Environment = host.Environment
+		hostJson.Group = host.Group
+		hostJson.HostKey = host.HostKey
+		hostJson.Location = host.Location
+		hostJson.Name = host.Name
+		hostJson.ID = host.ID
+		return hostJson, unmarshalErr
+	} else {
 		var vars = map[string]any{}
 		unmarshalErr = json.Unmarshal([]byte(*host.Vars), &vars)
 		hostJson.Vars = map[string]any(vars)
+		hostJson.Environment = host.Environment
+		hostJson.Group = host.Group
+		hostJson.HostKey = host.HostKey
+		hostJson.Location = host.Location
+		hostJson.Name = host.Name
+		hostJson.ID = host.ID
+		return hostJson, unmarshalErr
 	}
-	hostJson.Environment = host.Environment
-	hostJson.Group = host.Group
-	hostJson.HostKey = host.HostKey
-	hostJson.Location = host.Location
-	hostJson.Name = host.Name
-	hostJson.ID = host.ID
-	return hostJson, unmarshalErr
 }
 
 func (c *Client) GetHosts(options *HostsListOptions) (hostsList HostsListJson, statusCode int, Error error) {
@@ -248,17 +263,22 @@ func (c *Client) CreateHost(hostNew HostJson, options *HostListOptions) (host Ho
 
 func (c *Client) CreateHostEncode(hostNew Host, options *HostListOptions) (host Host, statusCode int, Error error) {
 
-	requestHost, responseVarsErr := decodeHost(hostNew)
+	PrettyPrint("hostNew", hostNew)
+	hostDecoded, responseVarsErr := decodeHost(hostNew)
+	PrettyPrint("hostDecoded", hostDecoded)
 
 	resp, respErr := c.Client.R().
 		SetResult(&HostJson{}).
-		SetBody(requestHost).
+		SetBody(hostDecoded).
 		Post("/host")
 
 	result := (*resp.Result().(*HostJson))
-	host, responseVarsErr = encodeHost(result)
+	PrettyPrint("host result", result)
+	var hostEncoded Host
+	hostEncoded, responseVarsErr = encodeHost(result)
+	PrettyPrint("hostEncoded", hostEncoded)
 	err := errors.Join(respErr, responseVarsErr)
-	return host, resp.StatusCode(), err
+	return hostEncoded, resp.StatusCode(), err
 }
 
 func (c *Client) DeleteHost(hostID string, options *HostListOptions) (host Host, statusCode int, Error error) {
