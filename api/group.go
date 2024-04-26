@@ -46,7 +46,7 @@ type GroupUpdateRequest struct {
 	ProfileName         string                 `json:"profile_name,omitempty"`
 	ProfileVersion      string                 `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars                string                 `json:"vars,omitempty"`
+	Vars                *string                 `json:"vars,omitempty"`
 }
 
 type GroupCreateRequest struct {
@@ -56,7 +56,7 @@ type GroupCreateRequest struct {
 	ProfileName         string                 `json:"profile_name,omitempty"`
 	ProfileVersion      string                 `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
-	Vars                string                 `json:"vars"`
+	Vars                *string                 `json:"vars"`
 }
 
 type GroupCreateResponse struct {

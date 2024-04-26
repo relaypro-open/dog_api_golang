@@ -26,4 +26,4 @@ delete_release:
 	git push --delete origin ${VERSION}
 
 test:
-	go test --tags=integration github.com/relaypro-open/dog_api_golang/api
+	go test --tags=integration github.com/relaypro-open/dog_api_golang/api -count=1
