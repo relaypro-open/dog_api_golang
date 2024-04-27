@@ -206,9 +206,9 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact FactJson) {
 		"integer":     1,
 	}
 
-	Hosts1 := map[string]map[string]string{
-		"web.test.abc": map[string]string{"os": "Linux"},
-		"db.test.abc":  map[string]string{"db": "sql"},
+	Hosts1 := map[string]map[string]any{
+		"web.test.abc": map[string]any{"os": "Linux"},
+		"db.test.abc":  map[string]any{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
@@ -242,9 +242,9 @@ func DoTestCreateFact(t *testing.T) (fact FactJson) {
 		"integer":     1,
 	}
 
-	Hosts1 := map[string]map[string]string{
-		"web.test.abc": map[string]string{"os": "Linux"},
-		"db.test.abc":  map[string]string{"db": "sql"},
+	Hosts1 := map[string]map[string]any{
+		"web.test.abc": map[string]any{"os": "Linux"},
+		"db.test.abc":  map[string]any{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
