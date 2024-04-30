@@ -29,7 +29,7 @@ type FactJson struct {
 }
 
 type FactGroup struct {
-	Vars     *string                      `json:"vars,omitempty"`
+	Vars     map[string]*string           `json:"vars,omitempty"`
 	Hosts    map[string]map[string]*string `json:"hosts"`
 	Children []string                     `json:"children"`
 }
@@ -75,19 +75,27 @@ func encodeFact(factJson FactJson) (fact Fact) {
 					encodedHosts[name][key] = &groupHostsVarsString
 				}
 			}
-			responseVars, _ := json.Marshal(group.Vars)
-			varsString := string(responseVars)
+			varMap := make(map[string]*string)
+			for key, value := range group.Vars {
+				groupVar, _ := json.Marshal(value)
+				groupVarsString := string(groupVar)
+				varMap[key] = &groupVarsString
+			}
 			encodedGroup := FactGroup{
-				Vars:     &varsString,
+				Vars:     varMap,
 				Hosts:    encodedHosts,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
 		} else if group.Hosts == nil && group.Vars != nil {
-			responseVars, _ := json.Marshal(group.Vars)
-			varsString := string(responseVars)
+			varMap := make(map[string]*string)
+			for key, value := range group.Vars {
+				groupVar, _ := json.Marshal(value)
+				groupVarsString := string(groupVar)
+				varMap[key] = &groupVarsString
+			}
 			encodedGroup := FactGroup{
-				Vars:     &varsString,
+				Vars:     varMap,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
@@ -123,20 +131,24 @@ func decodeFact(fact Fact) (factJson FactJson, unmarshalErr error) {
 	for name, group := range fact.Groups {
 		newGroup := FactGroupJson{}
 		if group.Vars != nil && group.Hosts != nil {
-			var vars = map[string]any{}
-			_ = json.Unmarshal([]byte(*group.Vars), &vars)
-			newGroup.Vars = vars
+			varMap := make(map[string]any)
+			for key, value := range group.Vars {
+				var vars any
+				unmarshalErr = json.Unmarshal([]byte(*value), &vars)
+				log.Printf("unmarshalErr: %+v\n", unmarshalErr)
+				varMap[key] = vars
+			}
+			newGroup.Vars = varMap
 			decodedHosts := map[string]map[string]any{}
 			for name, host := range group.Hosts {
 				for key, value := range host {
-					var vars = map[string]any{}
+					var vars any
 					unmarshalErr = json.Unmarshal([]byte(*value), &vars)
 					log.Printf("unmarshalErr: %+v\n", unmarshalErr)
 					decodedHosts[name] = make(map[string]any)
 					decodedHosts[name][key] = vars
 				}
 			}
-			unmarshalErr = json.Unmarshal([]byte(*group.Vars), &decodedHosts)
 			newGroup.Hosts = decodedHosts
 		} else if group.Vars == nil && group.Hosts != nil {
 			decodedHosts := make(map[string]map[string]any)
@@ -145,18 +157,23 @@ func decodeFact(fact Fact) (factJson FactJson, unmarshalErr error) {
 				for key, value := range host {
 					//log.Printf("value: %+v\n", value)
 					log.Printf("name, %v, key: %v\n", name, key)
-					vars := map[string]any{}
-					_ = json.Unmarshal([]byte(*value), &vars)
-					//log.Printf("vars: %+v\n", vars)
+					var vars any
+					unmarshalErr = json.Unmarshal([]byte(*value), &vars)
+					log.Printf("vars: %+v\n", vars)
 					decodedHosts[name] = make(map[string]any)
 					decodedHosts[name][key] = vars
 				}
 			}
 			newGroup.Hosts = decodedHosts
 		} else if group.Vars != nil && group.Hosts == nil {
-			var vars = map[string]any{}
-			_ = json.Unmarshal([]byte(*group.Vars), &vars)
-			newGroup.Vars = vars
+			varMap := make(map[string]any)
+			for key, value := range group.Vars {
+				var vars any
+				unmarshalErr = json.Unmarshal([]byte(*value), &vars)
+				log.Printf("unmarshalErr: %+v\n", unmarshalErr)
+				varMap[key] = vars
+			}
+			newGroup.Vars = varMap
 		}
 		newGroup.Children = group.Children
 		newGroups[name] = &newGroup
@@ -165,6 +182,7 @@ func decodeFact(fact Fact) (factJson FactJson, unmarshalErr error) {
 	factDecoded.Groups = newGroups
 	factDecoded.Name = fact.Name
 	factDecoded.ID = fact.ID
+	log.Printf("unmarshalErr: %+v\n", unmarshalErr)
 	return factDecoded, unmarshalErr
 }
 
