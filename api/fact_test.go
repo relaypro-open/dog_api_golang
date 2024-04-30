@@ -10,15 +10,15 @@ import (
 )
 
 func TestFactIntegration(t *testing.T) {
-	//FactCreateResponse := DoTestCreateFact(t) //C
-	//t.Logf("Id: %v", FactCreateResponse.ID)
-	//DoTestGetFacts(t)                               //R
-	//DoTestGetFact(t, FactCreateResponse.ID)         //R
-	//DoTestGetFactByName(t, FactCreateResponse.Name) //R
-	//DoTestUpdateFact(t, FactCreateResponse.ID)      //U
-	//updatedFact := DoTestGetFact(t, FactCreateResponse.ID)
-	//assert.Equal(t, "name_update", updatedFact.Name)
-	//DoTestDeleteFact(t, FactCreateResponse.ID) //D
+	FactCreateResponse := DoTestCreateFact(t) //C
+	t.Logf("Id: %v", FactCreateResponse.ID)
+	DoTestGetFacts(t)                               //R
+	DoTestGetFact(t, FactCreateResponse.ID)         //R
+	DoTestGetFactByName(t, FactCreateResponse.Name) //R
+	DoTestUpdateFact(t, FactCreateResponse.ID)      //U
+	updatedFact := DoTestGetFact(t, FactCreateResponse.ID)
+	assert.Equal(t, "name_update", updatedFact.Name)
+	DoTestDeleteFact(t, FactCreateResponse.ID) //D
 
 	FactCreateResponseEncode := DoTestCreateFactEncode(t) //C
 	t.Logf("Id: %v", FactCreateResponseEncode.ID)
@@ -79,33 +79,31 @@ func DoTestGetFactByNameEncode(t *testing.T, FactName string) (Fact Fact) {
 func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	Vars1 := map[string]any{
+	Vars1 := `{
 	    "environment": "mob_dev",
 	    "dog_env": "dev",
 	    "boolean": true,
-	    "integer": 1,
-        }
+	    "integer": 1
+        }`
 
-	Hosts1 := map[string]map[string]any{
-		"web.test.abc": map[string]any{"os": "Linux"},
-		"db.test.abc":  map[string]any{"db": "sql"},
+	Hosts1 := map[string]map[string]string{
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroupJson{
-		Vars:     Vars1,
+	Ig1 := &FactGroup{
+		Vars:     &Vars1,
 		Hosts:    Hosts1,
 		Children: Children1}
 
-	update := FactJson{
+	update := Fact{
 		Name:   "name_update",
-		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
+		Groups: map[string]*FactGroup{"mob_dev": Ig1},
 	}
 
-	updateEncoded := encodeFact(update)
-
-	res, statusCode, err := c.UpdateFactEncode(FactID, updateEncoded, nil)
+	res, statusCode, err := c.UpdateFactEncode(FactID, update, nil)
 
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
@@ -120,24 +118,30 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
-	Hosts1 := map[string]map[string]any{
-		"web.test.abc": map[string]any{"os": "Linux"},
-		"db.test.abc":  map[string]any{"db": "sql"},
+	//Vars1 := `{
+	//    "environment": "mob_dev",
+	//    "dog_env": "dev",
+	//    "boolean": true,
+	//    "integer": 1
+	//    }`
+
+	Hosts1 := map[string]map[string]string{
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
 
-	Ig1 := &FactGroupJson{
+	Ig1 := &FactGroup{
 		Hosts:    Hosts1,
 		Children: Children1}
 
-	newFact := FactJson{
+	newFact := Fact{
 		Name:   "name",
-		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
+		Groups: map[string]*FactGroup{"mob_dev": Ig1},
 	}
-	newFactEncoded := encodeFact(newFact)
 
-	res, statusCode, err := c.CreateFactEncode(newFactEncoded, nil)
+	res, statusCode, err := c.CreateFactEncode(newFact, nil)
 	assert.Equal(t, 201, statusCode)
 	assert.NotEmpty(t, res.ID, "expected non-empty ID")
 	assert.Nil(t, err, "expecting nil error")
@@ -202,9 +206,9 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact FactJson) {
 		"integer":     1,
 	}
 
-	Hosts1 := map[string]map[string]any{
-		"web.test.abc": map[string]any{"os": "Linux"},
-		"db.test.abc":  map[string]any{"db": "sql"},
+	Hosts1 := map[string]map[string]string{
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
@@ -238,9 +242,9 @@ func DoTestCreateFact(t *testing.T) (fact FactJson) {
 		"integer":     1,
 	}
 
-	Hosts1 := map[string]map[string]any{
-		"web.test.abc": map[string]any{"os": "Linux"},
-		"db.test.abc":  map[string]any{"db": "sql"},
+	Hosts1 := map[string]map[string]string{
+		"web.test.abc": map[string]string{"os": "Linux"},
+		"db.test.abc":  map[string]string{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
