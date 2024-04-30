@@ -29,9 +29,9 @@ type FactJson struct {
 }
 
 type FactGroup struct {
-	Vars     map[string]*string           `json:"vars,omitempty"`
+	Vars     *string                        `json:"vars,omitempty"`
 	Hosts    map[string]map[string]*string `json:"hosts"`
-	Children []string                     `json:"children"`
+	Children []string                      `json:"children"`
 }
 
 type FactGroupJson struct {
@@ -61,7 +61,7 @@ type FactCreateResponse struct {
 	Result string `json:"result"`
 }
 
-func encodeFact(factJson FactJson) (fact Fact) {
+func encodeFact(factJson FactJson) (fact Fact, marshalErr error) {
 	factEncoded := Fact{}
 	encodedGroups := map[string]*FactGroup{}
 	encodedHosts := map[string]map[string]*string{}
@@ -75,27 +75,34 @@ func encodeFact(factJson FactJson) (fact Fact) {
 					encodedHosts[name][key] = &groupHostsVarsString
 				}
 			}
-			varMap := make(map[string]*string)
-			for key, value := range group.Vars {
-				groupVar, _ := json.Marshal(value)
-				groupVarsString := string(groupVar)
-				varMap[key] = &groupVarsString
-			}
+			//varMap := make(map[string]*string)
+			//for key, value := range group.Vars {
+			//	groupVar, _ := json.Marshal(value)
+			//	groupVarsString := string(groupVar)
+			//	varMap[key] = &groupVarsString
+			//}
+			var responseVars []byte
+			responseVars, marshalErr = json.Marshal(group.Vars)
+			varsString := string(responseVars)
+
 			encodedGroup := FactGroup{
-				Vars:     varMap,
+				Vars:     &varsString,
 				Hosts:    encodedHosts,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
 		} else if group.Hosts == nil && group.Vars != nil {
-			varMap := make(map[string]*string)
-			for key, value := range group.Vars {
-				groupVar, _ := json.Marshal(value)
-				groupVarsString := string(groupVar)
-				varMap[key] = &groupVarsString
-			}
+			//varMap := make(map[string]*string)
+			//for key, value := range group.Vars {
+			//	groupVar, _ := json.Marshal(value)
+			//	groupVarsString := string(groupVar)
+			//	varMap[key] = &groupVarsString
+			//}
+			var responseVars []byte
+			responseVars, marshalErr = json.Marshal(group.Vars)
+			varsString := string(responseVars)
 			encodedGroup := FactGroup{
-				Vars:     varMap,
+				Vars:     &varsString,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
@@ -123,7 +130,7 @@ func encodeFact(factJson FactJson) (fact Fact) {
 	factEncoded.Groups = encodedGroups
 	factEncoded.Name = factJson.Name
 	factEncoded.ID = factJson.ID
-	return factEncoded
+	return factEncoded, marshalErr
 }
 
 func decodeFact(fact Fact) (factJson FactJson, unmarshalErr error) {
@@ -131,14 +138,17 @@ func decodeFact(fact Fact) (factJson FactJson, unmarshalErr error) {
 	for name, group := range fact.Groups {
 		newGroup := FactGroupJson{}
 		if group.Vars != nil && group.Hosts != nil {
-			varMap := make(map[string]any)
-			for key, value := range group.Vars {
-				var vars any
-				unmarshalErr = json.Unmarshal([]byte(*value), &vars)
-				log.Printf("unmarshalErr: %+v\n", unmarshalErr)
-				varMap[key] = vars
-			}
-			newGroup.Vars = varMap
+			var vars = map[string]any{}
+			unmarshalErr = json.Unmarshal([]byte(*group.Vars), &vars)
+			newGroup.Vars = map[string]any(vars)
+			//varMap := make(map[string]any)
+			//for key, value := range group.Vars {
+			//	var vars any
+			//	unmarshalErr = json.Unmarshal([]byte(*value), &vars)
+			//	log.Printf("unmarshalErr: %+v\n", unmarshalErr)
+			//	varMap[key] = vars
+			//}
+			//newGroup.Vars = varMap
 			decodedHosts := map[string]map[string]any{}
 			for name, host := range group.Hosts {
 				for key, value := range host {
@@ -166,14 +176,17 @@ func decodeFact(fact Fact) (factJson FactJson, unmarshalErr error) {
 			}
 			newGroup.Hosts = decodedHosts
 		} else if group.Vars != nil && group.Hosts == nil {
-			varMap := make(map[string]any)
-			for key, value := range group.Vars {
-				var vars any
-				unmarshalErr = json.Unmarshal([]byte(*value), &vars)
-				log.Printf("unmarshalErr: %+v\n", unmarshalErr)
-				varMap[key] = vars
-			}
-			newGroup.Vars = varMap
+			var vars = map[string]any{}
+			unmarshalErr = json.Unmarshal([]byte(*group.Vars), &vars)
+			newGroup.Vars = map[string]any(vars)
+			//varMap := make(map[string]any)
+			//for key, value := range group.Vars {
+			//	var vars any
+			//	unmarshalErr = json.Unmarshal([]byte(*value), &vars)
+			//	log.Printf("unmarshalErr: %+v\n", unmarshalErr)
+			//	varMap[key] = vars
+			//}
+			//newGroup.Vars = varMap
 		}
 		newGroup.Children = group.Children
 		newGroups[name] = &newGroup
@@ -205,7 +218,8 @@ func (c *Client) GetFactsEncode(options *FactsListOptions) (factsList FactsList,
 	result := (*resp.Result().(*FactsListJson))
 	encodeFacts := FactsList{}
 	for _, factJson := range result {
-		encodeFacts = append(encodeFacts, encodeFact(factJson))
+		newFact, _ := encodeFact(factJson)
+		encodeFacts = append(encodeFacts, newFact )
 	}
 	return encodeFacts, resp.StatusCode(), err
 }
@@ -230,7 +244,7 @@ func (c *Client) GetFactEncode(FactID string, options *FactListOptions) (fact Fa
 		Get("/fact/{FactID}")
 
 	result := (*resp.Result().(*FactJson))
-	factEncoded := encodeFact(result)
+	factEncoded, _ := encodeFact(result)
 	return factEncoded, resp.StatusCode(), err
 
 }
@@ -255,7 +269,7 @@ func (c *Client) GetFactByNameEncode(FactName string, options *FactListOptions) 
 		Get("/fact?name={FactName}")
 
 	result := (*resp.Result().(*FactJson))
-	factEncoded := encodeFact(result)
+	factEncoded, _ := encodeFact(result)
 	return factEncoded, resp.StatusCode(), err
 
 }
@@ -271,7 +285,7 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 		Put("/fact/{FactID}")
 
 	result := (*resp.Result().(*FactJson))
-	factEncoded := encodeFact(result)
+	factEncoded, _ := encodeFact(result)
 	err := errors.Join(responseVarsErr, respErr)
 
 	return factEncoded, resp.StatusCode(), err
@@ -290,7 +304,7 @@ func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact 
 
 	result := (*resp.Result().(*FactJson))
 	PrettyPrint("fact result", result)
-	factEncoded := encodeFact(result)
+	factEncoded, _ := encodeFact(result)
 	PrettyPrint("factEncoded", factEncoded)
 	err := errors.Join(respErr, responseVarsErr)
 

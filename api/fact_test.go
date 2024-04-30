@@ -103,7 +103,7 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
 	}
 
-	updateEncoded := encodeFact(update)
+	updateEncoded, _ := encodeFact(update)
 
 	res, statusCode, err := c.UpdateFactEncode(FactID, updateEncoded, nil)
 
@@ -135,7 +135,7 @@ func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 		Name:   "name",
 		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
 	}
-	newFactEncoded := encodeFact(newFact)
+	newFactEncoded, _ := encodeFact(newFact)
 
 	res, statusCode, err := c.CreateFactEncode(newFactEncoded, nil)
 	assert.Equal(t, 201, statusCode)
