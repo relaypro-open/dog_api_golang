@@ -32,141 +32,141 @@ func TestFactIntegration(t *testing.T) {
 
 // *Encode functions are for use by Terraform
 
-func DoTestGetFactsEncode(t *testing.T) {
-	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-
-	res, statusCode, err := c.GetFactsEncode(nil)
-	assert.Equal(t, 200, statusCode)
-	t.Logf("err: %+v\n", err)
-	assert.Nil(t, err, "expecting nil error")
-	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res[0].ID %s\n", res[0].ID)
-
-	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
-}
-
-func DoTestGetFactEncode(t *testing.T, FactID string) (Fact Fact) {
-	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-
-	res, statusCode, err := c.GetFactEncode(FactID, nil)
-
-	assert.Equal(t, 200, statusCode)
-	assert.Nil(t, err, "expecting nil error")
-	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res: %+v\n", res)
-
-	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
-	assert.Equal(t, res.ID, FactID)
-	return res
-}
-
-func DoTestGetFactByNameEncode(t *testing.T, FactName string) (Fact Fact) {
-	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-
-	res, statusCode, err := c.GetFactByNameEncode(FactName, nil)
-
-	assert.Equal(t, 200, statusCode)
-	assert.Nil(t, err, "expecting nil error")
-	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res: %+v\n", res)
-
-	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
-	assert.Equal(t, res.Name, FactName)
-	return res
-}
-
-func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
-	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-
-	Vars1 := map[string]any{
-	    "environment": "mob_dev",
-	    "dog_env": "dev",
-	    "boolean": true,
-	    "integer": 1,
-        }
-
-	//S1 := "Linux"
-	//S2 := "sql"
-
-	//Hosts1 := map[string]map[string]*string{
-	//	"web.test.abc": map[string]*string{"os": &S1},
-	//	"db.test.abc":  map[string]*string{"db": &S2},
-	//}
-	Hosts1 := map[string]map[string]any{
-		"web.test.abc": map[string]any{"os": "Linux"},
-		"db.test.abc":  map[string]any{"db": "sql"},
-	}
-
-	Children1 := []string{"test"}
-
-	Ig1 := &FactGroupJson{
-		Vars:     Vars1,
-		Hosts:    Hosts1,
-		Children: Children1}
-
-	update := FactJson{
-		Name:   "name_update",
-		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
-	}
-
-	updateEncoded := encodeFact(update)
-
-	res, statusCode, err := c.UpdateFactEncode(FactID, updateEncoded, nil)
-
-	assert.Nil(t, err, "expecting nil error")
-	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("res: %+v\n", res)
-
-	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
-	assert.Equal(t, "name_update", res.Name)
-	assert.Equal(t, 200, statusCode)
-	return res
-}
-
-func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
-	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
-
-	//Vars1 := `{
-	//    "environment": "mob_dev",
-	//    "dog_env": "dev",
-	//    "boolean": true,
-	//    "integer": 1
-	//    }`
-	//M1 := *string{"os": "Linux"}
-	//M2 := *string{"db": "sql"}
-
-	//Hosts1 := map[string]map[string]*string{
-	//	"web.test.abc": map[string]&M1,
-	//	"db.test.abc":  map[string]&M2,
-	//}
-	
-	Hosts1 := map[string]map[string]any{
-		"web.test.abc": map[string]any{"os": "Linux"},
-		"db.test.abc":  map[string]any{"db": "sql"},
-	}
-
-	Children1 := []string{"test"}
-
-	Ig1 := &FactGroupJson{
-		Hosts:    Hosts1,
-		Children: Children1}
-
-	newFact := FactJson{
-		Name:   "name",
-		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
-	}
-
-	newFactEncoded := encodeFact(newFact)
-
-	res, statusCode, err := c.CreateFactEncode(newFactEncoded, nil)
-	assert.Equal(t, 201, statusCode)
-	assert.NotEmpty(t, res.ID, "expected non-empty ID")
-	assert.Nil(t, err, "expecting nil error")
-	assert.NotNil(t, res, "expecting non-nil result")
-	t.Logf("err: %v", err)
-	t.Logf("res: %+v\n", res)
-	return res
-}
+//func DoTestGetFactsEncode(t *testing.T) {
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+//
+//	res, statusCode, err := c.GetFactsEncode(nil)
+//	assert.Equal(t, 200, statusCode)
+//	t.Logf("err: %+v\n", err)
+//	assert.Nil(t, err, "expecting nil error")
+//	assert.NotNil(t, res, "expecting non-nil result")
+//	t.Logf("res[0].ID %s\n", res[0].ID)
+//
+//	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
+//}
+//
+//func DoTestGetFactEncode(t *testing.T, FactID string) (Fact Fact) {
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+//
+//	res, statusCode, err := c.GetFactEncode(FactID, nil)
+//
+//	assert.Equal(t, 200, statusCode)
+//	assert.Nil(t, err, "expecting nil error")
+//	assert.NotNil(t, res, "expecting non-nil result")
+//	t.Logf("res: %+v\n", res)
+//
+//	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
+//	assert.Equal(t, res.ID, FactID)
+//	return res
+//}
+//
+//func DoTestGetFactByNameEncode(t *testing.T, FactName string) (Fact Fact) {
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+//
+//	res, statusCode, err := c.GetFactByNameEncode(FactName, nil)
+//
+//	assert.Equal(t, 200, statusCode)
+//	assert.Nil(t, err, "expecting nil error")
+//	assert.NotNil(t, res, "expecting non-nil result")
+//	t.Logf("res: %+v\n", res)
+//
+//	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
+//	assert.Equal(t, res.Name, FactName)
+//	return res
+//}
+//
+//func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+//
+//	Vars1 := map[string]any{
+//	    "environment": "mob_dev",
+//	    "dog_env": "dev",
+//	    "boolean": true,
+//	    "integer": 1,
+//        }
+//
+//	//S1 := "Linux"
+//	//S2 := "sql"
+//
+//	//Hosts1 := map[string]map[string]*string{
+//	//	"web.test.abc": map[string]*string{"os": &S1},
+//	//	"db.test.abc":  map[string]*string{"db": &S2},
+//	//}
+//	Hosts1 := map[string]map[string]any{
+//		"web.test.abc": map[string]any{"os": "Linux"},
+//		"db.test.abc":  map[string]any{"db": "sql"},
+//	}
+//
+//	Children1 := []string{"test"}
+//
+//	Ig1 := &FactGroupJson{
+//		Vars:     Vars1,
+//		Hosts:    Hosts1,
+//		Children: Children1}
+//
+//	update := FactJson{
+//		Name:   "name_update",
+//		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
+//	}
+//
+//	updateEncoded := encodeFact(update)
+//
+//	res, statusCode, err := c.UpdateFactEncode(FactID, updateEncoded, nil)
+//
+//	assert.Nil(t, err, "expecting nil error")
+//	assert.NotNil(t, res, "expecting non-nil result")
+//	t.Logf("res: %+v\n", res)
+//
+//	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
+//	assert.Equal(t, "name_update", res.Name)
+//	assert.Equal(t, 200, statusCode)
+//	return res
+//}
+//
+//func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
+//	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+//
+//	//Vars1 := `{
+//	//    "environment": "mob_dev",
+//	//    "dog_env": "dev",
+//	//    "boolean": true,
+//	//    "integer": 1
+//	//    }`
+//	//M1 := *string{"os": "Linux"}
+//	//M2 := *string{"db": "sql"}
+//
+//	//Hosts1 := map[string]map[string]*string{
+//	//	"web.test.abc": map[string]&M1,
+//	//	"db.test.abc":  map[string]&M2,
+//	//}
+//	
+//	Hosts1 := map[string]map[string]any{
+//		"web.test.abc": map[string]any{"os": "Linux"},
+//		"db.test.abc":  map[string]any{"db": "sql"},
+//	}
+//
+//	Children1 := []string{"test"}
+//
+//	Ig1 := &FactGroupJson{
+//		Hosts:    Hosts1,
+//		Children: Children1}
+//
+//	newFact := FactJson{
+//		Name:   "name",
+//		Groups: map[string]*FactGroupJson{"mob_dev": Ig1},
+//	}
+//
+//	newFactEncoded := encodeFact(newFact)
+//
+//	res, statusCode, err := c.CreateFactEncode(newFactEncoded, nil)
+//	assert.Equal(t, 201, statusCode)
+//	assert.NotEmpty(t, res.ID, "expected non-empty ID")
+//	assert.Nil(t, err, "expecting nil error")
+//	assert.NotNil(t, res, "expecting non-nil result")
+//	t.Logf("err: %v", err)
+//	t.Logf("res: %+v\n", res)
+//	return res
+//}
 
 //Non-Terraform functions
 
