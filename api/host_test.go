@@ -204,17 +204,19 @@ func DoTestGetHostEncode(t *testing.T, hostID string) (host Host) {
 func DoTestUpdateHostEncode(t *testing.T, hostID string) (host Host) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 
+	Vars1 := `{
+		"test": "host_test",
+		"boolean":  true,
+		"integer": 1
+	}`
+
 	updateHost := Host{
 		Environment: "*",
 		Group:       "update_group",
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		Vars: `{
-			"test": "host_test",
-			"boolean":  true,
-			"integer": 1
-		}`,
+		Vars:        Vars1,
 	}
 	res, statusCode, err := c.UpdateHostEncode(hostID, updateHost, nil)
 
@@ -236,7 +238,6 @@ func DoTestUpdateHostEncodeNullStringVars(t *testing.T, hostID string) (host Hos
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "null_string_vars",
-		Vars:        "null",
 	}
 	res, statusCode, err := c.UpdateHostEncode(hostID, updateHost, nil)
 
@@ -252,6 +253,11 @@ func DoTestUpdateHostEncodeNullStringVars(t *testing.T, hostID string) (host Hos
 
 func DoTestCreateHostEncode(t *testing.T) (host Host) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+	Vars1 := `{
+		"test": "host_test",
+		"boolean":  true,
+		"integer": 1
+	}`
 
 	newHost := Host{
 		Environment: "*",
@@ -259,13 +265,10 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "new_name",
-		Vars: `{
-			"test": "host_test",
-			"boolean":  true,
-			"integer": 1
-		}`,
+		Vars:        Vars1,
 	}
 
+	t.Logf("newHost: %+v", newHost)
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)
 
 	assert.Equal(t, 201, statusCode)
@@ -306,7 +309,6 @@ func DoTestCreateHostEncodeEmptyVars(t *testing.T) (host Host) {
 		HostKey:     "new_hostkey",
 		Location:    "*",
 		Name:        "empty_vars",
-		Vars:        "",
 	}
 
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)
