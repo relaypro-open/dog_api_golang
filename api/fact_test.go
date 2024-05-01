@@ -86,16 +86,16 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 	    "integer": 1
         }`
 
-	Hosts1 := map[string]map[string]string{
-		"web.test.abc": map[string]string{"os": "Linux"},
-		"db.test.abc":  map[string]string{"db": "sql"},
-	}
+	Hosts1 := `{
+		"web.test.abc": {"os": "Linux"},
+		"db.test.abc":  {"db": "sql"},
+	}`
 
 	Children1 := []string{"test"}
 
 	Ig1 := &FactGroup{
 		Vars:     &Vars1,
-		Hosts:    Hosts1,
+		Hosts:    &Hosts1,
 		Children: Children1}
 
 	update := Fact{
@@ -125,15 +125,15 @@ func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 	//    "integer": 1
 	//    }`
 
-	Hosts1 := map[string]map[string]string{
-		"web.test.abc": map[string]string{"os": "Linux"},
-		"db.test.abc":  map[string]string{"db": "sql"},
-	}
+	Hosts1 := `{
+		"web.test.abc": {"os": "Linux"},
+		"db.test.abc":  {"db": "sql"},
+	}`
 
 	Children1 := []string{"test"}
 
 	Ig1 := &FactGroup{
-		Hosts:    Hosts1,
+		Hosts:    &Hosts1,
 		Children: Children1}
 
 	newFact := Fact{
@@ -206,9 +206,9 @@ func DoTestUpdateFact(t *testing.T, FactID string) (Fact FactJson) {
 		"integer":     1,
 	}
 
-	Hosts1 := map[string]map[string]string{
-		"web.test.abc": map[string]string{"os": "Linux"},
-		"db.test.abc":  map[string]string{"db": "sql"},
+	Hosts1 := map[string]map[string]any{
+		"web.test.abc": map[string]any{"os": "Linux"},
+		"db.test.abc":  map[string]any{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
@@ -242,9 +242,9 @@ func DoTestCreateFact(t *testing.T) (fact FactJson) {
 		"integer":     1,
 	}
 
-	Hosts1 := map[string]map[string]string{
-		"web.test.abc": map[string]string{"os": "Linux"},
-		"db.test.abc":  map[string]string{"db": "sql"},
+	Hosts1 := map[string]map[string]any{
+		"web.test.abc": map[string]any{"os": "Linux"},
+		"db.test.abc":  map[string]any{"db": "sql"},
 	}
 
 	Children1 := []string{"test"}
