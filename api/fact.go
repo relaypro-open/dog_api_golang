@@ -31,13 +31,13 @@ type FactJson struct {
 
 type FactGroup struct {
 	Vars     *string                      `json:"vars,omitempty"`
-	Hosts    map[string]map[string]string `json:"hosts"`
+	Hosts    *string                      `json:"hosts"`
 	Children []string                     `json:"children"`
 }
 
 type FactGroupJson struct {
 	Vars     map[string]any               `json:"vars,omitempty"`
-	Hosts    map[string]map[string]string `json:"hosts"`
+	Hosts    map[string]map[string]any    `json:"hosts"`
 	Children []string                     `json:"children"`
 }
 
@@ -66,9 +66,11 @@ func encodeFact(factJson FactJson) (fact Fact) {
 	factEncoded := Fact{}
 	encodedGroups := map[string]*FactGroup{}
 	for name, group := range factJson.Groups {
+		responseVars, _ := json.Marshal(group.Hosts)
+		hostsString := string(responseVars)
 		if group.Vars == nil {
 			encodedGroup := FactGroup{
-				Hosts:    group.Hosts,
+				Hosts:    &hostsString,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
@@ -77,7 +79,7 @@ func encodeFact(factJson FactJson) (fact Fact) {
 			varsString := string(responseVars)
 			encodedGroup := FactGroup{
 				Vars:     &varsString,
-				Hosts:    group.Hosts,
+				Hosts:    &hostsString,
 				Children: group.Children,
 			}
 			encodedGroups[name] = &encodedGroup
@@ -98,7 +100,11 @@ func decodeFact(fact Fact) (factJson FactJson) {
 			_ = json.Unmarshal([]byte(*group.Vars), &vars)
 			newGroup.Vars = vars
 		}
-		newGroup.Hosts = group.Hosts
+		if group.Hosts != nil {
+			var vars = map[string]map[string]any{}
+			_ = json.Unmarshal([]byte(*group.Hosts), &vars)
+			newGroup.Hosts = vars
+		}
 		newGroup.Children = group.Children
 		newGroups[name] = &newGroup
 	}
