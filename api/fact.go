@@ -62,7 +62,7 @@ type FactCreateResponse struct {
 	Result string `json:"result"`
 }
 
-func encodeFact(factJson FactJson) (fact Fact) {
+func EncodeFact(factJson FactJson) (fact Fact) {
 	factEncoded := Fact{}
 	encodedGroups := map[string]*FactGroup{}
 	for name, group := range factJson.Groups {
@@ -91,18 +91,20 @@ func encodeFact(factJson FactJson) (fact Fact) {
 	return factEncoded
 }
 
-func decodeFact(fact Fact) (factJson FactJson) {
+func DecodeFact(fact Fact) (factJson FactJson, err error) {
 	newGroups := map[string]*FactGroupJson{}
+	var varsUnmarshallErr error
+	var hostsUnmarshallErr error 
 	for name, group := range fact.Groups {
 		newGroup := FactGroupJson{}
 		if group.Vars != nil {
 			var vars = map[string]any{}
-			_ = json.Unmarshal([]byte(*group.Vars), &vars)
+			varsUnmarshallErr = json.Unmarshal([]byte(*group.Vars), &vars)
 			newGroup.Vars = vars
 		}
 		if group.Hosts != nil {
 			var vars = map[string]map[string]any{}
-			_ = json.Unmarshal([]byte(*group.Hosts), &vars)
+			hostsUnmarshallErr = json.Unmarshal([]byte(*group.Hosts), &vars)
 			newGroup.Hosts = vars
 		}
 		newGroup.Children = group.Children
@@ -112,7 +114,9 @@ func decodeFact(fact Fact) (factJson FactJson) {
 	factDecoded.Groups = newGroups
 	factDecoded.Name = fact.Name
 	factDecoded.ID = fact.ID
-	return factDecoded
+	err = errors.Join(varsUnmarshallErr, hostsUnmarshallErr)
+
+	return factDecoded, err
 }
 
 func (c *Client) GetFactsEncode(options *FactsListOptions) (factsList FactsList, statusCode int, Error error) {
@@ -132,11 +136,11 @@ func (c *Client) GetFactsEncode(options *FactsListOptions) (factsList FactsList,
 		Get("/facts")
 
 	result := (*resp.Result().(*FactsListJson))
-	encodeFacts := FactsList{}
+	EncodeFacts := FactsList{}
 	for _, factJson := range result {
-		encodeFacts = append(encodeFacts, encodeFact(factJson))
+		EncodeFacts = append(EncodeFacts, EncodeFact(factJson))
 	}
-	return encodeFacts, resp.StatusCode(), err
+	return EncodeFacts, resp.StatusCode(), err
 }
 
 func (c *Client) GetFactEncode(FactID string, options *FactListOptions) (fact Fact, statusCode int, Error error) {
@@ -159,7 +163,7 @@ func (c *Client) GetFactEncode(FactID string, options *FactListOptions) (fact Fa
 		Get("/fact/{FactID}")
 
 	result := (*resp.Result().(*FactJson))
-	factEncoded := encodeFact(result)
+	factEncoded := EncodeFact(result)
 	return factEncoded, resp.StatusCode(), err
 
 }
@@ -184,7 +188,7 @@ func (c *Client) GetFactByNameEncode(FactName string, options *FactListOptions) 
 		Get("/fact?name={FactName}")
 
 	result := (*resp.Result().(*FactJson))
-	factEncoded := encodeFact(result)
+	factEncoded := EncodeFact(result)
 	return factEncoded, resp.StatusCode(), err
 
 }
@@ -197,8 +201,8 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 
 	log.SetOutput(file)
 
-	factDecoded := decodeFact(factUpdate)
-	resp, err := c.Client.R().
+	factDecoded, decodeErr := DecodeFact(factUpdate)
+	resp, clientErr := c.Client.R().
 		SetResult(&FactJson{}).
 		SetPathParams(map[string]string{
 			"FactID": FactID,
@@ -207,7 +211,8 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 		Put("/fact/{FactID}")
 
 	result := (*resp.Result().(*FactJson))
-	factEncoded := encodeFact(result)
+	factEncoded := EncodeFact(result)
+	err = errors.Join(decodeErr, clientErr)
 
 	return factEncoded, resp.StatusCode(), err
 }
@@ -215,7 +220,7 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
 
 	PrettyPrint("factNew", factNew)
-	factDecoded := decodeFact(factNew)
+	factDecoded, decodeErr := DecodeFact(factNew)
 	PrettyPrint("factDecoded", factDecoded)
 	resp, respErr := c.Client.R().
 		SetResult(&FactJson{}).
@@ -224,9 +229,9 @@ func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact 
 
 	result := (*resp.Result().(*FactJson))
 	PrettyPrint("fact result", result)
-	factEncoded := encodeFact(result)
+	factEncoded := EncodeFact(result)
 	PrettyPrint("factEncoded", factEncoded)
-	err := errors.Join(respErr)
+	err := errors.Join(decodeErr, respErr)
 
 	return factEncoded, resp.StatusCode(), err
 }

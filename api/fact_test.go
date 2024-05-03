@@ -88,7 +88,7 @@ func DoTestUpdateFactEncode(t *testing.T, FactID string) (fact Fact) {
 
 	Hosts1 := `{
 		"web.test.abc": {"os": "Linux"},
-		"db.test.abc":  {"db": "sql"},
+		"db.test.abc":  {"db": "sql"}
 	}`
 
 	Children1 := []string{"test"}
@@ -127,7 +127,7 @@ func DoTestCreateFactEncode(t *testing.T) (fact Fact) {
 
 	Hosts1 := `{
 		"web.test.abc": {"os": "Linux"},
-		"db.test.abc":  {"db": "sql"},
+		"db.test.abc":  {"db": "sql"}
 	}`
 
 	Children1 := []string{"test"}
