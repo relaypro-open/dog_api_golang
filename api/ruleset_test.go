@@ -15,6 +15,7 @@ func TestRuleIntegration(t *testing.T) {
 	t.Logf("Id: %v", rulesetCreateResponse.ID)
 	DoTestGetRulesets(t)
 	DoTestGetRulesetsNames(t)
+	//DoTestGetRulesetsActive(t)
 	DoTestGetRuleset(t, rulesetCreateResponse.ID)
 	DoTestGetRulesetByName(t, rulesetCreateResponse.Name) //R
 	DoTestUpdateRuleset(t, rulesetCreateResponse.ID)      //U
@@ -36,6 +37,21 @@ func DoTestGetRulesetsNames(t *testing.T) {
 
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
+
+func DoTestGetRulesetsActive(t *testing.T) {
+	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
+
+	options := RulesetsListOptions{}
+	options.Active = true
+	res, statusCode, err := c.GetRulesets(&options)
+	assert.Equal(t, 200, statusCode)
+	assert.Nil(t, err, "expecting nil error")
+	assert.NotNil(t, res, "expecting non-nil result")
+	t.Logf("res[0].ID %s\n", res[0].ID)
+
+	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
+}
+
 
 func DoTestGetRulesets(t *testing.T) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
