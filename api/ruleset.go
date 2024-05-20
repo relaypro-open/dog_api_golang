@@ -58,7 +58,19 @@ func (c *Client) GetRulesets(options *RulesetsListOptions) (rulesetList Rulesets
 		active = options.Active
 	}
 
-	if names {
+	if names && active {
+		resp, err := c.Client.R().
+			SetResult(&RulesetsList{}).
+			SetQueryParams(map[string]string{
+				"page_no": strconv.Itoa(page),
+				"limit":   strconv.Itoa(limit),
+				"names":   strconv.FormatBool(names),
+				"active":  strconv.FormatBool(active),
+			}).
+			Get("/rulesets")
+		result := (*resp.Result().(*RulesetsList))
+		return result, resp.StatusCode(), err
+	} else if names {
 		resp, err := c.Client.R().
 			SetResult(&RulesetsList{}).
 			SetQueryParams(map[string]string{
