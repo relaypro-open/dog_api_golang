@@ -52,7 +52,6 @@ func DoTestGetRulesetsActive(t *testing.T) {
 	assert.NotEmpty(t, res[0].ID, "expecting non-empty Rules")
 }
 
-
 func DoTestGetRulesets(t *testing.T) {
 	c := NewClient(os.Getenv("DOG_API_TOKEN"), os.Getenv("DOG_API_ENDPOINT"))
 

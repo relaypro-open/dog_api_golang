@@ -14,7 +14,7 @@ type Host struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"` //raw json for Terraform
-	AlertEnable *bool  `json:"alert_enable,omitempty"`
+	AlertEnable bool  `json:"alert_enable,omitempty"`
 }
 
 type HostJson struct {
@@ -84,7 +84,7 @@ func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
 		host.Vars = varsString
 	}
 	if hostJson.AlertEnable != nil {
-		host.AlertEnable = hostJson.AlertEnable
+		host.AlertEnable = *hostJson.AlertEnable
 	}
 	host.Environment = hostJson.Environment
 	host.Group = hostJson.Group
@@ -101,8 +101,8 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 		unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
 		hostJson.Vars = map[string]any(vars)
 	}
-	if host.AlertEnable != nil {
-		hostJson.AlertEnable = host.AlertEnable
+	if host.AlertEnable == false || host.AlertEnable == true {
+		hostJson.AlertEnable = &host.AlertEnable
 	}
 	hostJson.Environment = host.Environment
 	hostJson.Group = host.Group
@@ -258,17 +258,21 @@ func (c *Client) CreateHost(hostNew HostJson, options *HostListOptions) (host Ho
 
 func (c *Client) CreateHostEncode(hostNew Host, options *HostListOptions) (host Host, statusCode int, Error error) {
 
-	requestHost, responseVarsErr := decodeHost(hostNew)
+	PrettyPrint("hostNew", hostNew)
+	decodedHost, responseVarsErr := decodeHost(hostNew)
+	PrettyPrint("decodedHost", decodedHost)
 
 	resp, respErr := c.Client.R().
 		SetResult(&HostJson{}).
-		SetBody(requestHost).
+		SetBody(decodedHost).
 		Post("/host")
 
 	result := (*resp.Result().(*HostJson))
-	host, responseVarsErr = encodeHost(result)
+	PrettyPrint("result", result)
+	hostEncoded, responseVarsErr := encodeHost(result)
+	PrettyPrint("hostEncoded", hostEncoded)
 	err := errors.Join(respErr, responseVarsErr)
-	return host, resp.StatusCode(), err
+	return hostEncoded, resp.StatusCode(), err
 }
 
 func (c *Client) DeleteHost(hostID string, options *HostListOptions) (host Host, statusCode int, Error error) {

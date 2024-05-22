@@ -40,9 +40,9 @@ type RulesetListOptions struct {
 type RulesetsList []Ruleset
 
 type RulesetsListOptions struct {
-	Limit int   `json:"limit"`
-	Page  int   `json:"page"`
-	Names bool  `json:"names"`
+	Limit  int  `json:"limit"`
+	Page   int  `json:"page"`
+	Names  bool `json:"names"`
 	Active bool `json:"active"`
 }
 

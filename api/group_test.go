@@ -169,7 +169,7 @@ func DoTestUpdateGroupEncode(t *testing.T, GroupID string) (group Group) {
 			"boolean": true,
 			"integer": 1
 		}`,
-		AlertEnable:  BoolPointer(true),
+		AlertEnable: BoolPointer(true),
 	}
 	res, statusCode, err := c.UpdateGroupEncode(GroupID, update, nil)
 

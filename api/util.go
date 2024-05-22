@@ -13,5 +13,5 @@ func PrettyPrint(title string, incoming interface{}) {
 }
 
 func BoolPointer(b bool) *bool {
-    return &b
+	return &b
 }

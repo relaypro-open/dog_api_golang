@@ -210,7 +210,6 @@ func DoTestUpdateHostEncode(t *testing.T, hostID string) (host Host) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
-		AlertEnable: BoolPointer(true),
 		Vars: `{
 			"test": "host_test",
 			"boolean":  true,
@@ -265,6 +264,7 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 			"boolean":  true,
 			"integer": 1
 		}`,
+		AlertEnable: true,
 	}
 
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)
@@ -272,6 +272,7 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 	assert.Equal(t, 201, statusCode)
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
+	assert.Equal(t, true, res.AlertEnable)
 	t.Logf("err: %v", err)
 	t.Logf("res: %+v\n", res)
 	return res

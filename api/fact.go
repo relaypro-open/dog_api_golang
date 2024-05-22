@@ -30,15 +30,15 @@ type FactJson struct {
 }
 
 type FactGroup struct {
-	Vars     *string                      `json:"vars,omitempty"`
-	Hosts    *string                      `json:"hosts"`
-	Children []string                     `json:"children"`
+	Vars     *string  `json:"vars,omitempty"`
+	Hosts    *string  `json:"hosts"`
+	Children []string `json:"children"`
 }
 
 type FactGroupJson struct {
-	Vars     map[string]any               `json:"vars,omitempty"`
-	Hosts    map[string]map[string]any    `json:"hosts"`
-	Children []string                     `json:"children"`
+	Vars     map[string]any            `json:"vars,omitempty"`
+	Hosts    map[string]map[string]any `json:"hosts"`
+	Children []string                  `json:"children"`
 }
 
 type FactListOptions struct {
@@ -94,7 +94,7 @@ func EncodeFact(factJson FactJson) (fact Fact) {
 func DecodeFact(fact Fact) (factJson FactJson, err error) {
 	newGroups := map[string]*FactGroupJson{}
 	var varsUnmarshallErr error
-	var hostsUnmarshallErr error 
+	var hostsUnmarshallErr error
 	for name, group := range fact.Groups {
 		newGroup := FactGroupJson{}
 		if group.Vars != nil {
@@ -219,18 +219,18 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 
 func (c *Client) CreateFactEncode(factNew Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
 
-	PrettyPrint("factNew", factNew)
+	//PrettyPrint("factNew", factNew)
 	factDecoded, decodeErr := DecodeFact(factNew)
-	PrettyPrint("factDecoded", factDecoded)
+	//PrettyPrint("factDecoded", factDecoded)
 	resp, respErr := c.Client.R().
 		SetResult(&FactJson{}).
 		SetBody(factDecoded).
 		Post("/fact")
 
 	result := (*resp.Result().(*FactJson))
-	PrettyPrint("fact result", result)
+	//PrettyPrint("fact result", result)
 	factEncoded := EncodeFact(result)
-	PrettyPrint("factEncoded", factEncoded)
+	//PrettyPrint("factEncoded", factEncoded)
 	err := errors.Join(decodeErr, respErr)
 
 	return factEncoded, resp.StatusCode(), err
