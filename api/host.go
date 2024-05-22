@@ -14,7 +14,7 @@ type Host struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"` //raw json for Terraform
-	AlertEnable bool   `json:"alert_enable"`
+	AlertEnable *bool   `json:"alert_enable"`
 }
 
 type HostJson struct {
@@ -25,7 +25,7 @@ type HostJson struct {
 	Location    string         `json:"location,omitempty"`
 	Name        string         `json:"name,omitempty"`
 	Vars        map[string]any `json:"vars,omitempty"` //parsed json
-	AlertEnable bool           `json:"alert_enable,omitempty"`
+	AlertEnable *bool           `json:"alert_enable,omitempty"`
 }
 
 type HostListOptions struct {
@@ -42,7 +42,7 @@ type HostUpdateRequest struct {
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Vars        string `json:"vars,omitempty"`
-	AlertEnable bool   `json:"alert_enable,omitempty"`
+	AlertEnable *bool   `json:"alert_enable,omitempty"`
 }
 
 type HostCreateRequest struct {
@@ -52,7 +52,7 @@ type HostCreateRequest struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"`
-	AlertEnable bool   `json:"alert_enable"`
+	AlertEnable *bool   `json:"alert_enable"`
 }
 
 type HostCreateResponse struct {
@@ -63,7 +63,7 @@ type HostCreateResponse struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"`
-	AlertEnable bool   `json:"alert_enable"`
+	AlertEnable *bool   `json:"alert_enable"`
 }
 
 type HostsList []Host
