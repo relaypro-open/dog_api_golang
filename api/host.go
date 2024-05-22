@@ -83,9 +83,7 @@ func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
 		varsString := string(responseVars)
 		host.Vars = varsString
 	}
-	if hostJson.AlertEnable == true || hostJson.AlertEnable == false {
-		host.AlertEnable = hostJson.AlertEnable
-	}
+	host.AlertEnable = hostJson.AlertEnable
 	host.Environment = hostJson.Environment
 	host.Group = hostJson.Group
 	host.HostKey = hostJson.HostKey
@@ -101,9 +99,7 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 		unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
 		hostJson.Vars = map[string]any(vars)
 	}
-	if hostJson.AlertEnable == true || hostJson.AlertEnable == false {
-		hostJson.AlertEnable = host.AlertEnable
-	}
+	hostJson.AlertEnable = host.AlertEnable
 	hostJson.Environment = host.Environment
 	hostJson.Group = host.Group
 	hostJson.HostKey = host.HostKey

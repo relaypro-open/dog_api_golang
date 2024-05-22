@@ -272,7 +272,7 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 	assert.Equal(t, 201, statusCode)
 	assert.Nil(t, err, "expecting nil error")
 	assert.NotNil(t, res, "expecting non-nil result")
-	//assert.Equal(t, true, res.AlertEnable)
+	assert.Equal(t, true, res.AlertEnable)
 	t.Logf("err: %v", err)
 	t.Logf("res: %+v\n", res)
 	return res
