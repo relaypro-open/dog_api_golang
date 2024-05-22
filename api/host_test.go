@@ -264,7 +264,7 @@ func DoTestCreateHostEncode(t *testing.T) (host Host) {
 			"boolean":  true,
 			"integer": 1
 		}`,
-		AlertEnable: BoolPointer(true),
+		AlertEnable: true,
 	}
 
 	res, statusCode, err := c.CreateHostEncode(newHost, nil)
