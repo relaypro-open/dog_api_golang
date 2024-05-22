@@ -15,6 +15,7 @@ type Group struct {
 	ProfileVersion      string                 `json:"profile_version"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
 	Vars                string                 `json:"vars"`
+	AlertEnable         *bool                  `json:"alert_enable,omitempty"`
 }
 
 type GroupJson struct {
@@ -26,6 +27,7 @@ type GroupJson struct {
 	ProfileVersion      string                 `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids,omitempty"`
 	Vars                map[string]any         `json:"vars,omitempty"` //parsed json
+	AlertEnable         *bool                  `json:"alert_enable,omitempty"`
 }
 
 type GroupListOptions struct {
@@ -47,6 +49,7 @@ type GroupUpdateRequest struct {
 	ProfileVersion      string                 `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
 	Vars                string                 `json:"vars,omitempty"`
+	AlertEnable         *bool                  `json:"alert_enable,omitempty"`
 }
 
 type GroupCreateRequest struct {
@@ -57,6 +60,7 @@ type GroupCreateRequest struct {
 	ProfileVersion      string                 `json:"profile_version,omitempty"`
 	Ec2SecurityGroupIds []*Ec2SecurityGroupIds `json:"ec2_security_group_ids"`
 	Vars                string                 `json:"vars"`
+	AlertEnable         *bool                  `json:"alert_enable,omitempty"`
 }
 
 type GroupCreateResponse struct {
@@ -80,6 +84,9 @@ func encodeGroup(groupJson GroupJson) (group Group, marshalErr error) {
 		varsString := string(responseVars)
 		group.Vars = varsString
 	}
+	if groupJson.AlertEnable != nil {
+		group.AlertEnable = groupJson.AlertEnable
+	}
 	group.ID = groupJson.ID
 	group.Description = groupJson.Description
 	group.ProfileId = groupJson.ProfileId
@@ -95,6 +102,9 @@ func decodeGroup(group Group) (groupJson GroupJson, unmarshalErr error) {
 		var vars = map[string]any{}
 		unmarshalErr = json.Unmarshal([]byte(group.Vars), &vars)
 		groupJson.Vars = map[string]any(vars)
+	}
+	if group.AlertEnable != nil {
+		groupJson.AlertEnable = group.AlertEnable
 	}
 	groupJson.ID = group.ID
 	groupJson.Description = group.Description

@@ -14,6 +14,7 @@ type Host struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"` //raw json for Terraform
+	AlertEnable *bool  `json:"alert_enable,omitempty"`
 }
 
 type HostJson struct {
@@ -24,6 +25,7 @@ type HostJson struct {
 	Location    string         `json:"location,omitempty"`
 	Name        string         `json:"name,omitempty"`
 	Vars        map[string]any `json:"vars,omitempty"` //parsed json
+	AlertEnable *bool          `json:"alert_enable,omitempty"`
 }
 
 type HostListOptions struct {
@@ -40,6 +42,7 @@ type HostUpdateRequest struct {
 	Location    string `json:"location,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Vars        string `json:"vars,omitempty"`
+	AlertEnable *bool  `json:"alert_enable,omitempty"`
 }
 
 type HostCreateRequest struct {
@@ -49,6 +52,7 @@ type HostCreateRequest struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"`
+	AlertEnable *bool  `json:"alert_enable,omitempty"`
 }
 
 type HostCreateResponse struct {
@@ -59,6 +63,7 @@ type HostCreateResponse struct {
 	Location    string `json:"location"`
 	Name        string `json:"name"`
 	Vars        string `json:"vars"`
+	AlertEnable *bool  `json:"alert_enable,omitempty"`
 }
 
 type HostsList []Host
@@ -78,6 +83,9 @@ func encodeHost(hostJson HostJson) (host Host, marshalErr error) {
 		varsString := string(responseVars)
 		host.Vars = varsString
 	}
+	if hostJson.AlertEnable != nil {
+		host.AlertEnable = hostJson.AlertEnable
+	}
 	host.Environment = hostJson.Environment
 	host.Group = hostJson.Group
 	host.HostKey = hostJson.HostKey
@@ -92,6 +100,9 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 		var vars = map[string]any{}
 		unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
 		hostJson.Vars = map[string]any(vars)
+	}
+	if host.AlertEnable != nil {
+		hostJson.AlertEnable = host.AlertEnable
 	}
 	hostJson.Environment = host.Environment
 	hostJson.Group = host.Group

@@ -210,6 +210,7 @@ func DoTestUpdateHostEncode(t *testing.T, hostID string) (host Host) {
 		HostKey:     "update-hostkey",
 		Location:    "*",
 		Name:        "update_name",
+		AlertEnable: BoolPointer(true),
 		Vars: `{
 			"test": "host_test",
 			"boolean":  true,

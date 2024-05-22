@@ -11,3 +11,7 @@ func PrettyPrint(title string, incoming interface{}) {
 	fmt.Println(string(d))
 	fmt.Println("=end", title)
 }
+
+func BoolPointer(b bool) *bool {
+    return &b
+}
