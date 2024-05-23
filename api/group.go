@@ -103,9 +103,7 @@ func decodeGroup(group Group) (groupJson GroupJson, unmarshalErr error) {
 		unmarshalErr = json.Unmarshal([]byte(group.Vars), &vars)
 		groupJson.Vars = map[string]any(vars)
 	}
-	if group.AlertEnable != nil {
-		groupJson.AlertEnable = group.AlertEnable
-	}
+	groupJson.AlertEnable = group.AlertEnable //add even if nil
 	groupJson.ID = group.ID
 	groupJson.Description = group.Description
 	groupJson.ProfileId = group.ProfileId

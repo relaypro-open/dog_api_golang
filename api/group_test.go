@@ -179,6 +179,7 @@ func DoTestUpdateGroupEncode(t *testing.T, GroupID string) (group Group) {
 
 	assert.NotEmpty(t, res.ID, "expecting non-empty ID")
 	assert.Equal(t, "name_update", res.Name)
+	assert.Equal(t, BoolPointer(true), res.AlertEnable)
 	assert.Equal(t, 200, statusCode)
 	return res
 }

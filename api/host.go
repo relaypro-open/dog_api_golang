@@ -101,9 +101,7 @@ func decodeHost(host Host) (hostJson HostJson, unmarshalErr error) {
 		unmarshalErr = json.Unmarshal([]byte(host.Vars), &vars)
 		hostJson.Vars = map[string]any(vars)
 	}
-	//if hostJson.AlertEnable != nil {
-		hostJson.AlertEnable = host.AlertEnable
-	//}
+	hostJson.AlertEnable = host.AlertEnable //add even if nil
 	hostJson.Environment = host.Environment
 	hostJson.Group = host.Group
 	hostJson.HostKey = host.HostKey
