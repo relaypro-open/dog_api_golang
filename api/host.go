@@ -258,9 +258,9 @@ func (c *Client) CreateHost(hostNew HostJson, options *HostListOptions) (host Ho
 
 func (c *Client) CreateHostEncode(hostNew Host, options *HostListOptions) (host Host, statusCode int, Error error) {
 
-	PrettyPrint("hostNew", hostNew)
+	//PrettyPrint("hostNew", hostNew)
 	decodedHost, decodeErr := decodeHost(hostNew)
-	PrettyPrint("decodedHost", decodedHost)
+	//PrettyPrint("decodedHost", decodedHost)
 
 	resp, respErr := c.Client.R().
 		SetResult(&HostJson{}).
@@ -268,9 +268,9 @@ func (c *Client) CreateHostEncode(hostNew Host, options *HostListOptions) (host 
 		Post("/host")
 
 	result := (*resp.Result().(*HostJson))
-	PrettyPrint("result", result)
+	//PrettyPrint("result", result)
 	hostEncoded, responseVarsErr := encodeHost(result)
-	PrettyPrint("hostEncoded", hostEncoded)
+	//PrettyPrint("hostEncoded", hostEncoded)
 	err := errors.Join(respErr, decodeErr,responseVarsErr)
 	return hostEncoded, resp.StatusCode(), err
 }
