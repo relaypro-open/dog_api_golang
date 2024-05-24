@@ -66,7 +66,6 @@ func EncodeFact(factJson FactJson) (fact Fact) {
 	for name, group := range factJson.Groups {
 		responseVars, _ := json.Marshal(group.Hosts)
 		hostsString := string(responseVars)
-		fmt.Printf("variable val=%v is of type %v \n", hostsString, reflect.ValueOf(hostsString).Kind())
 		if group.Vars == nil {
 			encodedGroup := FactGroup{
 				Hosts:    &hostsString,
@@ -205,7 +204,7 @@ func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactL
 
 	result := (*resp.Result().(*FactJson))
 	factEncoded := EncodeFact(result)
-	err = errors.Join(decodeErr, clientErr)
+	err := errors.Join(decodeErr, clientErr)
 
 	return factEncoded, resp.StatusCode(), err
 }
