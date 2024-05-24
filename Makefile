@@ -2,7 +2,7 @@ HOSTNAME=github.com
 NAMESPACE=relaypro-open
 NAME=dog_api_golang
 BINARY=${NAME}
-VERSION=v1.0.4
+VERSION=v1.0.5
 OS_ARCH=linux_amd64
 
 default: install
