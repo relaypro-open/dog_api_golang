@@ -3,8 +3,6 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"log"
-	"os"
 	"strconv"
 )
 
@@ -68,6 +66,7 @@ func EncodeFact(factJson FactJson) (fact Fact) {
 	for name, group := range factJson.Groups {
 		responseVars, _ := json.Marshal(group.Hosts)
 		hostsString := string(responseVars)
+		fmt.Printf("variable val=%v is of type %v \n", hostsString, reflect.ValueOf(hostsString).Kind())
 		if group.Vars == nil {
 			encodedGroup := FactGroup{
 				Hosts:    &hostsString,
@@ -194,12 +193,6 @@ func (c *Client) GetFactByNameEncode(FactName string, options *FactListOptions) 
 }
 
 func (c *Client) UpdateFactEncode(FactID string, factUpdate Fact, options *FactListOptions) (fact Fact, statusCode int, Error error) {
-	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.SetOutput(file)
 
 	factDecoded, decodeErr := DecodeFact(factUpdate)
 	resp, clientErr := c.Client.R().

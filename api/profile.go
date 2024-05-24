@@ -20,26 +20,43 @@ type ProfileListOptions struct {
 type ProfilesListOptions struct {
 	Limit int `json:"limit"`
 	Page  int `json:"page"`
+	Active bool `json:"active"`
 }
 
 func (c *Client) GetProfiles(options *ProfilesListOptions) (profilesList ProfilesList, statusCode int, Error error) {
 	limit := 100
 	page := 1
+	active := false
 	if options != nil {
 		limit = options.Limit
 		page = options.Page
+		active = options.Active
 	}
 
-	resp, err := c.Client.R().
-		SetResult(&ProfilesList{}).
-		SetQueryParams(map[string]string{
-			"page_no": strconv.Itoa(page),
-			"limit":   strconv.Itoa(limit),
-		}).
-		Get("/profiles")
+	if active {
+		resp, err := c.Client.R().
+			SetResult(&ProfilesList{}).
+			SetQueryParams(map[string]string{
+				"page_no": strconv.Itoa(page),
+				"limit":   strconv.Itoa(limit),
+				"active":  strconv.FormatBool(active),
+			}).
+			Get("/profiles")
 
-	result := (*resp.Result().(*ProfilesList))
-	return result, resp.StatusCode(), err
+		result := (*resp.Result().(*ProfilesList))
+		return result, resp.StatusCode(), err
+	} else {
+		resp, err := c.Client.R().
+			SetResult(&ProfilesList{}).
+			SetQueryParams(map[string]string{
+				"page_no": strconv.Itoa(page),
+				"limit":   strconv.Itoa(limit),
+			}).
+			Get("/profiles")
+
+		result := (*resp.Result().(*ProfilesList))
+		return result, resp.StatusCode(), err
+	}
 }
 
 // ProfileUpdateRequest is a struct for the request object required to update a Profile
